@@ -9,38 +9,357 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
+import { Route as SecuriteRouteImport } from './routes/securite'
+import { Route as SecteursRouteImport } from './routes/secteurs'
+import { Route as ProjetsRouteImport } from './routes/projets'
+import { Route as ProcessusRouteImport } from './routes/processus'
+import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as FavorisRouteImport } from './routes/favoris'
+import { Route as EcosystemeRouteImport } from './routes/ecosysteme'
+import { Route as DemandesRouteImport } from './routes/demandes'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CguRouteImport } from './routes/cgu'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProjetsIndexRouteImport } from './routes/projets.index'
+import { Route as ProjetsIdRouteImport } from './routes/projets.$id'
+import { Route as DataRoomIdRouteImport } from './routes/data-room.$id'
 
+const TableauDeBordRoute = TableauDeBordRouteImport.update({
+  id: '/tableau-de-bord',
+  path: '/tableau-de-bord',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecuriteRoute = SecuriteRouteImport.update({
+  id: '/securite',
+  path: '/securite',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecteursRoute = SecteursRouteImport.update({
+  id: '/secteurs',
+  path: '/secteurs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjetsRoute = ProjetsRouteImport.update({
+  id: '/projets',
+  path: '/projets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProcessusRoute = ProcessusRouteImport.update({
+  id: '/processus',
+  path: '/processus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumRoute = PremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavorisRoute = FavorisRouteImport.update({
+  id: '/favoris',
+  path: '/favoris',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EcosystemeRoute = EcosystemeRouteImport.update({
+  id: '/ecosysteme',
+  path: '/ecosysteme',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemandesRoute = DemandesRouteImport.update({
+  id: '/demandes',
+  path: '/demandes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CguRoute = CguRouteImport.update({
+  id: '/cgu',
+  path: '/cgu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjetsIndexRoute = ProjetsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProjetsRoute,
+} as any)
+const ProjetsIdRoute = ProjetsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ProjetsRoute,
+} as any)
+const DataRoomIdRoute = DataRoomIdRouteImport.update({
+  id: '/data-room/$id',
+  path: '/data-room/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/auth': typeof AuthRoute
+  '/cgu': typeof CguRoute
+  '/contact': typeof ContactRoute
+  '/demandes': typeof DemandesRoute
+  '/ecosysteme': typeof EcosystemeRoute
+  '/favoris': typeof FavorisRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/premium': typeof PremiumRoute
+  '/processus': typeof ProcessusRoute
+  '/projets': typeof ProjetsRouteWithChildren
+  '/secteurs': typeof SecteursRoute
+  '/securite': typeof SecuriteRoute
+  '/tableau-de-bord': typeof TableauDeBordRoute
+  '/data-room/$id': typeof DataRoomIdRoute
+  '/projets/$id': typeof ProjetsIdRoute
+  '/projets/': typeof ProjetsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/auth': typeof AuthRoute
+  '/cgu': typeof CguRoute
+  '/contact': typeof ContactRoute
+  '/demandes': typeof DemandesRoute
+  '/ecosysteme': typeof EcosystemeRoute
+  '/favoris': typeof FavorisRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/premium': typeof PremiumRoute
+  '/processus': typeof ProcessusRoute
+  '/secteurs': typeof SecteursRoute
+  '/securite': typeof SecuriteRoute
+  '/tableau-de-bord': typeof TableauDeBordRoute
+  '/data-room/$id': typeof DataRoomIdRoute
+  '/projets/$id': typeof ProjetsIdRoute
+  '/projets': typeof ProjetsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/auth': typeof AuthRoute
+  '/cgu': typeof CguRoute
+  '/contact': typeof ContactRoute
+  '/demandes': typeof DemandesRoute
+  '/ecosysteme': typeof EcosystemeRoute
+  '/favoris': typeof FavorisRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/premium': typeof PremiumRoute
+  '/processus': typeof ProcessusRoute
+  '/projets': typeof ProjetsRouteWithChildren
+  '/secteurs': typeof SecteursRoute
+  '/securite': typeof SecuriteRoute
+  '/tableau-de-bord': typeof TableauDeBordRoute
+  '/data-room/$id': typeof DataRoomIdRoute
+  '/projets/$id': typeof ProjetsIdRoute
+  '/projets/': typeof ProjetsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/a-propos'
+    | '/auth'
+    | '/cgu'
+    | '/contact'
+    | '/demandes'
+    | '/ecosysteme'
+    | '/favoris'
+    | '/mentions-legales'
+    | '/premium'
+    | '/processus'
+    | '/projets'
+    | '/secteurs'
+    | '/securite'
+    | '/tableau-de-bord'
+    | '/data-room/$id'
+    | '/projets/$id'
+    | '/projets/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/a-propos'
+    | '/auth'
+    | '/cgu'
+    | '/contact'
+    | '/demandes'
+    | '/ecosysteme'
+    | '/favoris'
+    | '/mentions-legales'
+    | '/premium'
+    | '/processus'
+    | '/secteurs'
+    | '/securite'
+    | '/tableau-de-bord'
+    | '/data-room/$id'
+    | '/projets/$id'
+    | '/projets'
+  id:
+    | '__root__'
+    | '/'
+    | '/a-propos'
+    | '/auth'
+    | '/cgu'
+    | '/contact'
+    | '/demandes'
+    | '/ecosysteme'
+    | '/favoris'
+    | '/mentions-legales'
+    | '/premium'
+    | '/processus'
+    | '/projets'
+    | '/secteurs'
+    | '/securite'
+    | '/tableau-de-bord'
+    | '/data-room/$id'
+    | '/projets/$id'
+    | '/projets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AProposRoute: typeof AProposRoute
+  AuthRoute: typeof AuthRoute
+  CguRoute: typeof CguRoute
+  ContactRoute: typeof ContactRoute
+  DemandesRoute: typeof DemandesRoute
+  EcosystemeRoute: typeof EcosystemeRoute
+  FavorisRoute: typeof FavorisRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
+  PremiumRoute: typeof PremiumRoute
+  ProcessusRoute: typeof ProcessusRoute
+  ProjetsRoute: typeof ProjetsRouteWithChildren
+  SecteursRoute: typeof SecteursRoute
+  SecuriteRoute: typeof SecuriteRoute
+  TableauDeBordRoute: typeof TableauDeBordRoute
+  DataRoomIdRoute: typeof DataRoomIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tableau-de-bord': {
+      id: '/tableau-de-bord'
+      path: '/tableau-de-bord'
+      fullPath: '/tableau-de-bord'
+      preLoaderRoute: typeof TableauDeBordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/securite': {
+      id: '/securite'
+      path: '/securite'
+      fullPath: '/securite'
+      preLoaderRoute: typeof SecuriteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/secteurs': {
+      id: '/secteurs'
+      path: '/secteurs'
+      fullPath: '/secteurs'
+      preLoaderRoute: typeof SecteursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projets': {
+      id: '/projets'
+      path: '/projets'
+      fullPath: '/projets'
+      preLoaderRoute: typeof ProjetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/processus': {
+      id: '/processus'
+      path: '/processus'
+      fullPath: '/processus'
+      preLoaderRoute: typeof ProcessusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium': {
+      id: '/premium'
+      path: '/premium'
+      fullPath: '/premium'
+      preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favoris': {
+      id: '/favoris'
+      path: '/favoris'
+      fullPath: '/favoris'
+      preLoaderRoute: typeof FavorisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ecosysteme': {
+      id: '/ecosysteme'
+      path: '/ecosysteme'
+      fullPath: '/ecosysteme'
+      preLoaderRoute: typeof EcosystemeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demandes': {
+      id: '/demandes'
+      path: '/demandes'
+      fullPath: '/demandes'
+      preLoaderRoute: typeof DemandesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cgu': {
+      id: '/cgu'
+      path: '/cgu'
+      fullPath: '/cgu'
+      preLoaderRoute: typeof CguRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +367,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projets/': {
+      id: '/projets/'
+      path: '/'
+      fullPath: '/projets/'
+      preLoaderRoute: typeof ProjetsIndexRouteImport
+      parentRoute: typeof ProjetsRoute
+    }
+    '/projets/$id': {
+      id: '/projets/$id'
+      path: '/$id'
+      fullPath: '/projets/$id'
+      preLoaderRoute: typeof ProjetsIdRouteImport
+      parentRoute: typeof ProjetsRoute
+    }
+    '/data-room/$id': {
+      id: '/data-room/$id'
+      path: '/data-room/$id'
+      fullPath: '/data-room/$id'
+      preLoaderRoute: typeof DataRoomIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface ProjetsRouteChildren {
+  ProjetsIdRoute: typeof ProjetsIdRoute
+  ProjetsIndexRoute: typeof ProjetsIndexRoute
+}
+
+const ProjetsRouteChildren: ProjetsRouteChildren = {
+  ProjetsIdRoute: ProjetsIdRoute,
+  ProjetsIndexRoute: ProjetsIndexRoute,
+}
+
+const ProjetsRouteWithChildren =
+  ProjetsRoute._addFileChildren(ProjetsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AProposRoute: AProposRoute,
+  AuthRoute: AuthRoute,
+  CguRoute: CguRoute,
+  ContactRoute: ContactRoute,
+  DemandesRoute: DemandesRoute,
+  EcosystemeRoute: EcosystemeRoute,
+  FavorisRoute: FavorisRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
+  PremiumRoute: PremiumRoute,
+  ProcessusRoute: ProcessusRoute,
+  ProjetsRoute: ProjetsRouteWithChildren,
+  SecteursRoute: SecteursRoute,
+  SecuriteRoute: SecuriteRoute,
+  TableauDeBordRoute: TableauDeBordRoute,
+  DataRoomIdRoute: DataRoomIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
