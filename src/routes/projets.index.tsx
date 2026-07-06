@@ -1,45 +1,73 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, Sprout, Building2, Rocket } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ProjectCard } from "@/components/project/project-card";
-import { PROJECTS, SECTORS, COUNTRIES } from "@/lib/mock-data";
+import { PROJECTS, SECTORS, COUNTRIES, type ProjectChannel } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/projets/")({
-  head: () => ({ meta: [{ title: "Catalogue des projets — MiPROJET Invest" }, { name: "description", content: "Explorez les projets certifiés et éligibles Invest, filtrez par secteur, pays, montant et source." }] }),
+  head: () => ({ meta: [
+    { title: "Catalogue des opportunités — MiPROJET" },
+    { name: "description", content: "Explorez les opportunités MiPROJET Go, MiPROJET+ et MiPROJET Invest — filtrées par secteur, pays et montant." },
+  ] }),
   component: ProjectsCatalog,
 });
 
+const CHANNELS: { key: "ALL" | ProjectChannel; label: string; icon: React.ReactNode; tone: string }[] = [
+  { key: "ALL", label: "Tout", icon: null, tone: "" },
+  { key: "GO", label: "MiPROJET Go", icon: <Sprout className="h-4 w-4" />, tone: "text-brand-green border-brand-green data-[on=true]:bg-brand-green data-[on=true]:text-brand-green-foreground" },
+  { key: "PLUS", label: "MiPROJET+", icon: <Building2 className="h-4 w-4" />, tone: "text-brand-blue border-brand-blue data-[on=true]:bg-brand-blue data-[on=true]:text-brand-blue-foreground" },
+  { key: "INVEST", label: "MiPROJET Invest", icon: <Rocket className="h-4 w-4" />, tone: "text-brand-gold border-brand-gold data-[on=true]:bg-brand-gold data-[on=true]:text-brand-gold-foreground" },
+];
+
 function ProjectsCatalog() {
+  useTranslation();
   const [q, setQ] = useState("");
   const [sector, setSector] = useState<string | null>(null);
   const [country, setCountry] = useState<string | null>(null);
-  const [source, setSource] = useState<"ALL" | "GO" | "PLUS">("ALL");
+  const [channel, setChannel] = useState<"ALL" | ProjectChannel>("ALL");
   const [amountMax, setAmountMax] = useState(500000);
 
   const filtered = useMemo(() => PROJECTS.filter((p) => {
     if (sector && p.sector !== sector) return false;
     if (country && p.country !== country) return false;
-    if (source !== "ALL" && p.source !== source) return false;
+    if (channel !== "ALL" && p.source !== channel) return false;
     if (p.amount_sought_eur > amountMax) return false;
     if (q && !(`${p.code} ${p.sector} ${p.country} ${p.summary}`.toLowerCase().includes(q.toLowerCase()))) return false;
     return true;
-  }), [q, sector, country, source, amountMax]);
+  }), [q, sector, country, channel, amountMax]);
 
-  const hasFilters = !!sector || !!country || source !== "ALL" || q || amountMax < 500000;
+  const hasFilters = !!sector || !!country || channel !== "ALL" || q || amountMax < 500000;
+
+  const reset = () => { setSector(null); setCountry(null); setChannel("ALL"); setQ(""); setAmountMax(500000); };
 
   return (
     <SiteShell>
-      <div className="border-b border-border bg-gradient-to-b from-brand-blue/5 to-transparent">
+      <div className="border-b border-border bg-background">
         <div className="container-page py-10">
           <div className="text-xs font-bold uppercase tracking-widest text-brand-blue">Catalogue</div>
-          <h1 className="mt-2 text-3xl md:text-4xl font-black">Projets certifiés & éligibles Invest</h1>
+          <h1 className="mt-2 text-3xl md:text-4xl font-black">Opportunités MiPROJET</h1>
           <p className="mt-2 text-muted-foreground max-w-2xl">
-            Tous les projets sont validés par MiPROJET+. Les détails sensibles restent masqués
-            jusqu'aux niveaux d'accès autorisés.
+            Trois canaux, une même chaîne de certification. Choisissez le niveau qui correspond à votre stratégie d'investissement.
           </p>
+
+          {/* Channel tabs */}
+          <div className="mt-6 flex flex-wrap gap-2">
+            {CHANNELS.map((c) => (
+              <button
+                key={c.key}
+                data-on={channel === c.key}
+                onClick={() => setChannel(c.key)}
+                className={`inline-flex items-center gap-2 rounded-full border-2 px-4 py-2 text-sm font-semibold transition-colors ${c.key === "ALL" ? "border-border data-[on=true]:bg-foreground data-[on=true]:text-background" : c.tone}`}
+              >
+                {c.icon}
+                {c.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -49,10 +77,7 @@ function ProjectsCatalog() {
             <div className="flex items-center gap-2 text-sm font-semibold">
               <SlidersHorizontal className="h-4 w-4" /> Filtres
               {hasFilters && (
-                <button
-                  onClick={() => { setSector(null); setCountry(null); setSource("ALL"); setQ(""); setAmountMax(500000); }}
-                  className="ml-auto text-xs text-brand-blue hover:underline"
-                >Réinitialiser</button>
+                <button onClick={reset} className="ml-auto text-xs text-brand-blue hover:underline">Réinitialiser</button>
               )}
             </div>
 
@@ -60,20 +85,6 @@ function ProjectsCatalog() {
               <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Rechercher..." className="pl-9" />
             </div>
-
-            <FilterGroup label="Source">
-              <div className="grid grid-cols-3 gap-1 rounded-lg bg-muted p-1 text-xs font-medium">
-                {(["ALL", "GO", "PLUS"] as const).map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setSource(s)}
-                    className={`py-1.5 rounded-md transition-colors ${source === s ? "bg-background shadow" : "text-muted-foreground"}`}
-                  >
-                    {s === "ALL" ? "Tous" : s === "GO" ? "Go" : "+"}
-                  </button>
-                ))}
-              </div>
-            </FilterGroup>
 
             <FilterGroup label="Secteur">
               <div className="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto pr-1">
@@ -100,30 +111,25 @@ function ProjectsCatalog() {
               />
             </FilterGroup>
           </div>
-
-          <div className="rounded-2xl border border-brand-gold/40 bg-brand-gold/10 p-4 text-xs">
-            <div className="font-semibold text-brand-gold-foreground mb-1">🔒 Contact contrôlé</div>
-            <p className="text-muted-foreground">Aucun email, téléphone ou WhatsApp n'est jamais affiché. Toute mise en relation passe par MiPROJET.</p>
-          </div>
         </aside>
 
         <section>
           <div className="flex items-center justify-between mb-5">
             <div className="text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">{filtered.length}</span> projet{filtered.length > 1 ? "s" : ""}
+              <span className="font-semibold text-foreground">{filtered.length}</span> opportunité{filtered.length > 1 ? "s" : ""}
             </div>
             <div className="flex flex-wrap gap-1.5">
               {sector && <ActiveChip label={sector} onClose={() => setSector(null)} />}
               {country && <ActiveChip label={country} onClose={() => setCountry(null)} />}
-              {source !== "ALL" && <ActiveChip label={`Source: ${source}`} onClose={() => setSource("ALL")} />}
+              {channel !== "ALL" && <ActiveChip label={channel} onClose={() => setChannel("ALL")} />}
             </div>
           </div>
 
           {filtered.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border p-10 text-center">
-              <div className="text-lg font-semibold">Aucun projet ne correspond</div>
+              <div className="text-lg font-semibold">Aucune opportunité ne correspond</div>
               <p className="text-sm text-muted-foreground mt-1">Ajustez les filtres pour élargir la recherche.</p>
-              <Button className="mt-4" onClick={() => { setSector(null); setCountry(null); setSource("ALL"); setQ(""); setAmountMax(500000); }}>Réinitialiser</Button>
+              <Button className="mt-4" onClick={reset}>Réinitialiser</Button>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
