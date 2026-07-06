@@ -84,8 +84,7 @@ export const PROJECTS: Project[] = Array.from({ length: 24 }, (_, i) => {
         : source === "PLUS"
         ? `PME structurée du secteur ${sector.toLowerCase()} avec équipe dédiée, gouvernance formalisée et modèle éprouvé. Ouverture de tour pour accélération commerciale et industrielle.`
         : `Opportunité d'investissement en phase d'accélération dans ${sector.toLowerCase()}. Traction confirmée, projections solides et roadmap validée par notre comité.`,
-    detailed_pitch:
-      detailed_pitch: "Pitch complet, indicateurs financiers, roadmap, structure capitalistique et projections 3 ans.",
+    detailed_pitch: "Pitch complet, indicateurs financiers, roadmap, structure capitalistique et projections 3 ans.",
     amount_sought_eur: sought,
     amount_committed_eur: committed,
     stage,
