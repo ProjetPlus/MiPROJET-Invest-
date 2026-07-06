@@ -166,3 +166,7 @@ export function formatEUR(n: number) {
     maximumFractionDigits: 0,
   }).format(n);
 }
+
+export function channelOf(p: Project): ProjectChannel {
+  return p.source;
+}
