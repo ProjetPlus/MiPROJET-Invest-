@@ -9,11 +9,11 @@ export const Route = createFileRoute("/premium")({
   component: PremiumPage,
 });
 
-const FREE = ["Aperçu Level 1 des projets", "Recherche & filtres de base", "Suivi de 5 favoris", "Notifications hebdomadaires"];
+const FREE = ["Aperçu Aperçu Public des projets", "Recherche & filtres de base", "Suivi de 5 favoris", "Notifications hebdomadaires"];
 const PREMIUM = [
   "Accès prioritaire aux nouveaux projets (48h avant)",
   "Analyses financières avancées",
-  "Data Room étendue",
+  "Espace documentaire étendue",
   "Favoris illimités & alertes en temps réel",
   "Support dédié MiPROJET",
   "Visibilité accrue auprès des porteurs",

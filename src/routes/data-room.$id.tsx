@@ -13,7 +13,7 @@ export const Route = createFileRoute("/data-room/$id")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: loaderData ? `Data Room ${loaderData.project.code} — MiPROJET Invest` : "Data Room" },
+      { title: loaderData ? `Espace documentaire ${loaderData.project.code} — MiPROJET Invest` : "Espace documentaire" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -29,7 +29,7 @@ function DataRoomPage() {
   return (
     <SiteShell>
       <div className="container-page py-10 max-w-4xl">
-        <div className="text-xs font-bold uppercase tracking-widest text-brand-brick">Data Room sécurisée</div>
+        <div className="text-xs font-bold uppercase tracking-widest text-brand-brick">Espace documentaire</div>
         <h1 className="mt-2 text-3xl md:text-4xl font-black">{project.code} — {project.sector}</h1>
         <p className="mt-2 text-muted-foreground">Accès conditionnel : validation investisseur + validation MiPROJET + accord du porteur.</p>
 
@@ -65,7 +65,7 @@ function DataRoomPage() {
         {!unlocked && (
           <div className="mt-6 rounded-2xl border border-brand-brick/30 bg-brand-brick/8 p-5 text-sm">
             <div className="font-semibold text-brand-brick">🔒 Accès non autorisé</div>
-            <p className="mt-1 text-muted-foreground">L'accès complet à la Data Room nécessite une mise en relation validée par MiPROJET et un accord explicite du porteur.</p>
+            <p className="mt-1 text-muted-foreground">L'accès complet à la Espace documentaire nécessite une mise en relation validée par MiPROJET et un accord explicite du porteur.</p>
           </div>
         )}
       </div>
