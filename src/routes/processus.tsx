@@ -10,7 +10,7 @@ export const Route = createFileRoute("/processus")({
 
 const STEPS = [
   { icon: <CheckCircle2 className="h-5 w-5" />, t: "Inscription", d: "Créez votre compte investisseur et complétez votre profil.", tone: "blue" as const },
-  { icon: <ShieldCheck className="h-5 w-5" />, t: "Vérification KYC", d: "Validation d'identité par MiPROJET pour débloquer le Level 3.", tone: "green" as const },
+  { icon: <ShieldCheck className="h-5 w-5" />, t: "Vérification KYC", d: "Validation d'identité par MiPROJET pour débloquer le Accès Vérifié.", tone: "green" as const },
   { icon: <Users className="h-5 w-5" />, t: "Exploration", d: "Parcourez le catalogue certifié, filtré par secteur, pays, ticket.", tone: "gold" as const },
   { icon: <Send className="h-5 w-5" />, t: "Demande de mise en relation", d: "Soumission via workflow contrôlé — notification MiPROJET + porteur.", tone: "blue" as const },
   { icon: <Lock className="h-5 w-5" />, t: "Canal sécurisé", d: "Après validation croisée, un canal privé s'ouvre pour finaliser.", tone: "green" as const },

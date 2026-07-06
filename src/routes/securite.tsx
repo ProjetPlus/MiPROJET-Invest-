@@ -3,14 +3,14 @@ import { SiteShell } from "@/components/layout/site-shell";
 import { Shield, Lock, EyeOff, FileCheck, Ban, Database } from "lucide-react";
 
 export const Route = createFileRoute("/securite")({
-  head: () => ({ meta: [{ title: "Sécurité & Data Room — MiPROJET Invest" }, { name: "description", content: "Anti-contournement, Data Room, niveaux de visibilité : notre approche de la sécurité." }] }),
+  head: () => ({ meta: [{ title: "Sécurité & Espace documentaire — MiPROJET Invest" }, { name: "description", content: "Sélection rigoureuse, Espace documentaire, niveaux de visibilité : notre approche de la sécurité." }] }),
   component: SecurityPage,
 });
 
 const PILLARS = [
-  { icon: <Ban className="h-5 w-5" />, t: "Anti-contournement", d: "Aucune donnée de contact publique. Aucun email, téléphone ou WhatsApp affiché." },
+  { icon: <Ban className="h-5 w-5" />, t: "Sélection rigoureuse", d: "Aucune donnée de contact publique. Communication qualifiée via la plateforme." },
   { icon: <EyeOff className="h-5 w-5" />, t: "Anonymisation", d: "Nom, localisation précise et identité du porteur masqués jusqu'au canal validé." },
-  { icon: <Lock className="h-5 w-5" />, t: "Data Room", d: "Documents filigranés, accès conditionnel, traçabilité complète." },
+  { icon: <Lock className="h-5 w-5" />, t: "Espace documentaire", d: "Documents filigranés, accès conditionnel, traçabilité complète." },
   { icon: <FileCheck className="h-5 w-5" />, t: "Validation croisée", d: "Chaque mise en relation exige la validation MiPROJET + porteur." },
   { icon: <Shield className="h-5 w-5" />, t: "KYC investisseur", d: "Vérification d'identité obligatoire pour accéder aux niveaux avancés." },
   { icon: <Database className="h-5 w-5" />, t: "Base centrale", d: "Toutes les données proviennent de MiPROJET central — jamais de saisie côté Invest." },

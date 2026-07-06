@@ -38,7 +38,7 @@ function AuthPage() {
             relation via un workflow entièrement contrôlé.
           </p>
           <ul className="space-y-3 text-sm">
-            {["Projets validés et éligibles Invest", "Anti-contournement natif", "Data Room sécurisée", "Notifications MiPROJET intégrées"].map((t) => (
+            {["Projets validés et éligibles Invest", "Sélection rigoureuse natif", "Espace documentaire", "Notifications MiPROJET intégrées"].map((t) => (
               <li key={t} className="flex gap-2"><ShieldCheck className="h-5 w-5 text-brand-green shrink-0" /> {t}</li>
             ))}
           </ul>

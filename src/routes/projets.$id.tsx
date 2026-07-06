@@ -111,7 +111,7 @@ function ProjectDetail() {
                   <Metric label="Ticket moyen investisseur" value={formatEUR(Math.round(project.amount_sought_eur / 8))} tone="blue" />
                 </div>
               </Section>
-              <Section title="Data Room">
+              <Section title="Espace documentaire">
                 <div className="rounded-2xl border border-border p-4 space-y-2">
                   {Array.from({ length: project.documents_count }).map((_, i) => (
                     <DocRow key={i} name={`Document confidentiel ${i + 1}.pdf`} unlocked={level >= 4} />
@@ -120,7 +120,7 @@ function ProjectDetail() {
               </Section>
             </>
           ) : (
-            <LockedSection reason="Devenez investisseur vérifié pour accéder au pitch complet, aux analyses et à la Data Room." canUpgrade />
+            <LockedSection reason="Devenez investisseur vérifié pour accéder au pitch complet, aux analyses et à la Espace documentaire." canUpgrade />
           )}
         </div>
 
@@ -164,7 +164,7 @@ function ProjectDetail() {
 
             <div className="rounded-xl bg-brand-brick/8 border border-brand-brick/20 p-3 text-xs">
               <div className="flex gap-1.5"><Lock className="h-3.5 w-3.5 text-brand-brick shrink-0 mt-0.5" />
-                <span><span className="font-semibold text-brand-brick">Contact 100% contrôlé.</span> Aucun email, téléphone ou WhatsApp n'est affiché. La mise en relation passe par un workflow MiPROJET validé.</span>
+                <span><span className="font-semibold text-brand-brick">Mise en relation qualifiée.</span> Communication qualifiée via la plateforme.</span>
               </div>
             </div>
           </div>
@@ -172,14 +172,14 @@ function ProjectDetail() {
           {!user && (
             <div className="rounded-2xl border border-brand-blue/30 bg-brand-blue/8 p-5">
               <div className="text-sm font-semibold">Débloquez plus de détails</div>
-              <p className="mt-1 text-xs text-muted-foreground">Créez un compte pour accéder au Level 2 et suivre les projets.</p>
+              <p className="mt-1 text-xs text-muted-foreground">Créez un compte pour accéder au Accès Membre et suivre les projets.</p>
               <Link to="/auth"><Button className="mt-3 w-full bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90">Créer mon compte</Button></Link>
             </div>
           )}
           {user && !user.verified && (
             <div className="rounded-2xl border border-brand-green/30 bg-brand-green/8 p-5">
               <div className="text-sm font-semibold">Devenir investisseur vérifié</div>
-              <p className="mt-1 text-xs text-muted-foreground">Accédez à la Data Room, aux analyses et au pitch détaillé.</p>
+              <p className="mt-1 text-xs text-muted-foreground">Accédez à la Espace documentaire, aux analyses et au pitch détaillé.</p>
               <Button onClick={() => mockAuth.becomeVerified()} className="mt-3 w-full bg-brand-green text-brand-green-foreground hover:bg-brand-green/90">
                 Simuler la vérification
               </Button>
@@ -248,10 +248,10 @@ function DocRow({ name, unlocked }: { name: string; unlocked: boolean }) {
 
 function LevelBadge({ level }: { level: 1 | 2 | 3 | 4 }) {
   const cfg = {
-    1: { c: "bg-slate-500", t: "Level 1 · Public — Aperçu anonymisé" },
-    2: { c: "bg-brand-blue", t: "Level 2 · Connecté — Détails étendus" },
-    3: { c: "bg-brand-green", t: "Level 3 · Investisseur vérifié — Analyses" },
-    4: { c: "bg-brand-brick", t: "Level 4 · Mise en relation contrôlée" },
+    1: { c: "bg-slate-500", t: "Aperçu Public · Public — Aperçu anonymisé" },
+    2: { c: "bg-brand-blue", t: "Accès Membre · Connecté — Détails étendus" },
+    3: { c: "bg-brand-green", t: "Accès Vérifié · Investisseur vérifié — Analyses" },
+    4: { c: "bg-brand-brick", t: "Accès Premium · Mise en relation contrôlée" },
   }[level];
   return (
     <div className="flex items-center gap-2 text-xs">

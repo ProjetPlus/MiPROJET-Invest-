@@ -1,7 +1,8 @@
 // Mock data — will be replaced by external Supabase (MiPROJET central DB).
-// NOTE: MiPROJET Invest never CREATES projects. Projects arrive from MiPROJET Go / MiPROJET+.
+// Projects flow from MiPROJET Go / MiPROJET+ / MiPROJET Invest.
 
-export type ProjectSource = "GO" | "PLUS";
+export type ProjectSource = "GO" | "PLUS" | "INVEST";
+export type ProjectChannel = "GO" | "PLUS" | "INVEST";
 export type ProjectStage = "amorçage" | "croissance" | "expansion" | "scale-up";
 export type VisibilityLevel = 1 | 2 | 3 | 4;
 
@@ -65,7 +66,7 @@ function seeded(i: number, mod: number) {
 }
 
 export const PROJECTS: Project[] = Array.from({ length: 24 }, (_, i) => {
-  const source: ProjectSource = i % 3 === 0 ? "GO" : "PLUS";
+  const source: ProjectSource = i % 3 === 0 ? "GO" : i % 3 === 1 ? "PLUS" : "INVEST";
   const sector = SECTORS[seeded(i + 1, SECTORS.length)];
   const country = COUNTRIES[seeded(i + 3, COUNTRIES.length)];
   const stage = STAGES[seeded(i + 7, STAGES.length)];
@@ -80,9 +81,10 @@ export const PROJECTS: Project[] = Array.from({ length: 24 }, (_, i) => {
     summary:
       source === "GO"
         ? `Activité ${sector.toLowerCase()} en phase de croissance initiale. Chiffre d'affaires régulier et clientèle fidèle. Recherche de financement pour équipement et fonds de roulement.`
-        : `PME structurée du secteur ${sector.toLowerCase()} avec équipe dédiée, gouvernance formalisée et modèle éprouvé. Ouverture de tour pour accélération commerciale et industrielle.`,
-    detailed_pitch:
-      "Pitch complet disponible pour investisseurs vérifiés — indicateurs financiers, roadmap, structure capitalistique, projections 3 ans et analyse de marché consolidée par MiPROJET+.",
+        : source === "PLUS"
+        ? `PME structurée du secteur ${sector.toLowerCase()} avec équipe dédiée, gouvernance formalisée et modèle éprouvé. Ouverture de tour pour accélération commerciale et industrielle.`
+        : `Opportunité d'investissement en phase d'accélération dans ${sector.toLowerCase()}. Traction confirmée, projections solides et roadmap validée par notre comité.`,
+    detailed_pitch: "Pitch complet, indicateurs financiers, roadmap, structure capitalistique et projections 3 ans.",
     amount_sought_eur: sought,
     amount_committed_eur: committed,
     stage,
@@ -163,4 +165,8 @@ export function formatEUR(n: number) {
     currency: "EUR",
     maximumFractionDigits: 0,
   }).format(n);
+}
+
+export function channelOf(p: Project): ProjectChannel {
+  return p.source;
 }
