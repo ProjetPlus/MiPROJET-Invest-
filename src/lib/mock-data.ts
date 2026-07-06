@@ -1,7 +1,8 @@
 // Mock data — will be replaced by external Supabase (MiPROJET central DB).
-// NOTE: MiPROJET Invest never CREATES projects. Projects arrive from MiPROJET Go / MiPROJET+.
+// Projects flow from MiPROJET Go / MiPROJET+ / MiPROJET Invest.
 
-export type ProjectSource = "GO" | "PLUS";
+export type ProjectSource = "GO" | "PLUS" | "INVEST";
+export type ProjectChannel = "GO" | "PLUS" | "INVEST";
 export type ProjectStage = "amorçage" | "croissance" | "expansion" | "scale-up";
 export type VisibilityLevel = 1 | 2 | 3 | 4;
 
