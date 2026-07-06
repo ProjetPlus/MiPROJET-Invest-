@@ -13,11 +13,17 @@ export interface MockUser {
 
 const STORAGE_KEY = "mpi_mock_user";
 
+let cached: MockUser | null = null;
+let cachedRaw: string | null = null;
+
 function read(): MockUser | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as MockUser) : null;
+    if (raw === cachedRaw) return cached;
+    cachedRaw = raw;
+    cached = raw ? (JSON.parse(raw) as MockUser) : null;
+    return cached;
   } catch {
     return null;
   }
