@@ -253,7 +253,7 @@ function LandingPage() {
                 <Button size="lg" className="bg-white text-brand-blue hover:bg-white/90">Créer mon compte</Button>
               </Link>
               <Link to="/projets">
-                <Button size="lg" variant="outline" className="border-white/40 text-white hover:bg-white/10">Voir les projets</Button>
+                <Button size="lg" variant="outline" className="bg-transparent border-white/60 text-white hover:bg-white hover:text-brand-blue">Voir les projets</Button>
               </Link>
             </div>
           </div>
