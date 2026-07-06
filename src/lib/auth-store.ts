@@ -31,6 +31,7 @@ function read(): MockUser | null {
 
 const listeners = new Set<() => void>();
 function emit() {
+  cachedRaw = null;
   listeners.forEach((l) => l());
 }
 
