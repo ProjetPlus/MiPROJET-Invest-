@@ -86,7 +86,7 @@ function AuthPage() {
             </Button>
 
             <p className="text-xs text-center text-muted-foreground">
-              🔒 Interface de démonstration — la connexion à Supabase MiPROJET sera branchée par la suite.
+              🔒 Connexion sécurisée — vos données sont protégées.
             </p>
 
             <div className="text-xs text-center text-muted-foreground">

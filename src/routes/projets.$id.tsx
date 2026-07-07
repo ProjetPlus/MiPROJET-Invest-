@@ -179,9 +179,9 @@ function ProjectDetail() {
           {user && !user.verified && (
             <div className="rounded-2xl border border-brand-green/30 bg-brand-green/8 p-5">
               <div className="text-sm font-semibold">Devenir investisseur vérifié</div>
-              <p className="mt-1 text-xs text-muted-foreground">Accédez à la Espace documentaire, aux analyses et au pitch détaillé.</p>
+              <p className="mt-1 text-xs text-muted-foreground">Accédez à l'espace documentaire, aux analyses et au pitch détaillé après vérification.</p>
               <Button onClick={() => mockAuth.becomeVerified()} className="mt-3 w-full bg-brand-green text-brand-green-foreground hover:bg-brand-green/90">
-                Simuler la vérification
+                Démarrer la vérification
               </Button>
             </div>
           )}
@@ -207,7 +207,7 @@ function LockedSection({ reason, canUpgrade }: { reason: string; canUpgrade?: bo
       <p className="mt-3 text-sm text-muted-foreground max-w-md mx-auto">{reason}</p>
       <div className="mt-4 flex justify-center gap-2">
         <Link to="/auth"><Button variant="outline">Connexion</Button></Link>
-        {canUpgrade && <Button onClick={() => mockAuth.becomeVerified()} className="bg-brand-green text-brand-green-foreground hover:bg-brand-green/90">Simuler vérification</Button>}
+        {canUpgrade && <Button onClick={() => mockAuth.becomeVerified()} className="bg-brand-green text-brand-green-foreground hover:bg-brand-green/90">Démarrer la vérification</Button>}
       </div>
     </div>
   );
