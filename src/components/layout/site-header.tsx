@@ -32,7 +32,7 @@ export function SiteHeader() {
 
         <nav className="hidden lg:flex items-center gap-1">
           {NAV.map((n) => {
-            const active = pathname === n.to || pathname.startsWith(n.to + "/");
+            const active = n.to === "/" ? pathname === "/" : (pathname === n.to || pathname.startsWith(n.to + "/"));
             return (
               <Link
                 key={n.to}
