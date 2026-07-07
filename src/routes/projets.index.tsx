@@ -107,7 +107,7 @@ function ProjectsCatalog() {
 
             <FilterGroup label={`Montant max — ${amountMax.toLocaleString("fr-FR")} €`}>
               <input
-                type="range" min={10000} max={500000} step={10000}
+                type="range" min={10000} max={1000000} step={10000}
                 value={amountMax}
                 onChange={(e) => setAmountMax(Number(e.target.value))}
                 className="w-full accent-[color:var(--brand-blue)]"
