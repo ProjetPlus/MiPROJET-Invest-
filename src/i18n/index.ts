@@ -7,7 +7,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 const resources = {
   fr: {
     translation: {
-      nav: { projects: "Projets", ecosystem: "Écosystème", about: "À propos", process: "Processus", premium: "Premium", signIn: "Connexion", join: "Rejoindre" },
+      nav: { home: "Accueil", projects: "Projets", ecosystem: "Écosystème", about: "À propos", process: "Processus", premium: "Premium", signIn: "Connexion", join: "Rejoindre" },
       cta: { discover: "Découvrir", explore: "Explorer", invest: "Investir", seeProjects: "Voir les projets", createAccount: "Créer un compte" },
       hero: {
         badge: "L'écosystème panafricain de l'entrepreneuriat",
@@ -21,7 +21,7 @@ const resources = {
         miprojet: { name: "MiPROJET", tag: "Écosystème", desc: "La marque mère : vision, gouvernance et standards." },
         go: { name: "MiPROJET Go", tag: "Terrain", desc: "Micro-activités et entrepreneuriat informel accompagnés." },
         plus: { name: "MiPROJET+", tag: "Structuration", desc: "PME certifiées, gouvernance formalisée, modèle prouvé." },
-        invest: { name: "MiPROJET Invest", tag: "Capital", desc: "Opportunités d'investissement sélectionnées et validées." },
+        invest: { name: "MiPROJET Invest", tag: "Vitrine investisseur", desc: "L'espace qui présente aux investisseurs les projets issus de Go et de + prêts à être financés." },
       },
       projects: {
         title: "Opportunités sélectionnées",

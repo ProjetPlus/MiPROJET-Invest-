@@ -15,6 +15,7 @@ export function SiteHeader() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const NAV = [
+    { to: "/", label: t("nav.home", "Accueil") },
     { to: "/projets", label: t("nav.projects") },
     { to: "/ecosysteme", label: t("nav.ecosystem") },
     { to: "/processus", label: t("nav.process") },
@@ -31,7 +32,7 @@ export function SiteHeader() {
 
         <nav className="hidden lg:flex items-center gap-1">
           {NAV.map((n) => {
-            const active = pathname === n.to || pathname.startsWith(n.to + "/");
+            const active = n.to === "/" ? pathname === "/" : (pathname === n.to || pathname.startsWith(n.to + "/"));
             return (
               <Link
                 key={n.to}

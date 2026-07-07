@@ -1,17 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, SlidersHorizontal, X, Sprout, Building2, Rocket } from "lucide-react";
+import { Search, SlidersHorizontal, X, Sprout, Building2, MapPin, ShieldCheck, TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ProjectCard } from "@/components/project/project-card";
-import { PROJECTS, SECTORS, COUNTRIES, type ProjectChannel } from "@/lib/mock-data";
+import { PROJECTS, SECTORS, COUNTRIES, formatEUR, type ProjectChannel } from "@/lib/mock-data";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/projets/")({
   head: () => ({ meta: [
-    { title: "Catalogue des opportunités — MiPROJET" },
-    { name: "description", content: "Explorez les opportunités MiPROJET Go, MiPROJET+ et MiPROJET Invest — filtrées par secteur, pays et montant." },
+    { title: "Opportunités d'investissement — MiPROJET Invest" },
+    { name: "description", content: "Découvrez les projets sélectionnés issus de MiPROJET Go et MiPROJET+, prêts à être financés. Filtrez par secteur, pays et montant." },
   ] }),
   component: ProjectsCatalog,
 });
@@ -20,7 +21,6 @@ const CHANNELS: { key: "ALL" | ProjectChannel; label: string; icon: React.ReactN
   { key: "ALL", label: "Tout", icon: null, tone: "" },
   { key: "GO", label: "MiPROJET Go", icon: <Sprout className="h-4 w-4" />, tone: "text-brand-green border-brand-green data-[on=true]:bg-brand-green data-[on=true]:text-brand-green-foreground" },
   { key: "PLUS", label: "MiPROJET+", icon: <Building2 className="h-4 w-4" />, tone: "text-brand-blue border-brand-blue data-[on=true]:bg-brand-blue data-[on=true]:text-brand-blue-foreground" },
-  { key: "INVEST", label: "MiPROJET Invest", icon: <Rocket className="h-4 w-4" />, tone: "text-brand-gold border-brand-gold data-[on=true]:bg-brand-gold data-[on=true]:text-brand-gold-foreground" },
 ];
 
 function ProjectsCatalog() {
@@ -29,30 +29,33 @@ function ProjectsCatalog() {
   const [sector, setSector] = useState<string | null>(null);
   const [country, setCountry] = useState<string | null>(null);
   const [channel, setChannel] = useState<"ALL" | ProjectChannel>("ALL");
-  const [amountMax, setAmountMax] = useState(500000);
+  const [amountMax, setAmountMax] = useState(1000000);
 
+  const featured = PROJECTS.find((p) => p.id === "b7024000-fc34-4706-8901-2ce092283dbc");
   const filtered = useMemo(() => PROJECTS.filter((p) => {
+    if (p.id === featured?.id) return false;
     if (sector && p.sector !== sector) return false;
     if (country && p.country !== country) return false;
     if (channel !== "ALL" && p.source !== channel) return false;
     if (p.amount_sought_eur > amountMax) return false;
     if (q && !(`${p.code} ${p.sector} ${p.country} ${p.summary}`.toLowerCase().includes(q.toLowerCase()))) return false;
     return true;
-  }), [q, sector, country, channel, amountMax]);
+  }), [q, sector, country, channel, amountMax, featured]);
 
-  const hasFilters = !!sector || !!country || channel !== "ALL" || q || amountMax < 500000;
+  const hasFilters = !!sector || !!country || channel !== "ALL" || q || amountMax < 1000000;
 
-  const reset = () => { setSector(null); setCountry(null); setChannel("ALL"); setQ(""); setAmountMax(500000); };
+  const reset = () => { setSector(null); setCountry(null); setChannel("ALL"); setQ(""); setAmountMax(1000000); };
 
   return (
     <SiteShell>
       <div className="border-b border-border bg-background">
         <div className="container-page py-10">
-          <div className="text-xs font-bold uppercase tracking-widest text-brand-blue">Catalogue</div>
-          <h1 className="mt-2 text-3xl md:text-4xl font-black">Opportunités MiPROJET</h1>
+          <div className="text-xs font-bold uppercase tracking-widest text-brand-blue">Opportunités MiPROJET Invest</div>
+          <h1 className="mt-2 text-3xl md:text-4xl font-black">Projets prêts à être financés</h1>
           <p className="mt-2 text-muted-foreground max-w-2xl">
-            Trois canaux, une même chaîne de certification. Choisissez le niveau qui correspond à votre stratégie d'investissement.
+            Une sélection issue des deux canaux de l'écosystème — MiPROJET Go (terrain) et MiPROJET+ (structuration) — qualifiée par notre comité avant présentation aux investisseurs.
           </p>
+
 
           {/* Channel tabs */}
           <div className="mt-6 flex flex-wrap gap-2">
@@ -104,7 +107,7 @@ function ProjectsCatalog() {
 
             <FilterGroup label={`Montant max — ${amountMax.toLocaleString("fr-FR")} €`}>
               <input
-                type="range" min={10000} max={500000} step={10000}
+                type="range" min={10000} max={1000000} step={10000}
                 value={amountMax}
                 onChange={(e) => setAmountMax(Number(e.target.value))}
                 className="w-full accent-[color:var(--brand-blue)]"
@@ -113,15 +116,55 @@ function ProjectsCatalog() {
           </div>
         </aside>
 
-        <section>
-          <div className="flex items-center justify-between mb-5">
+        <section className="space-y-8">
+          {featured && (
+            <Link
+              to="/projets/$id"
+              params={{ id: featured.id }}
+              className="group block overflow-hidden rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg transition-all"
+            >
+              <div className="grid md:grid-cols-[1.1fr_1fr]">
+                <div className="relative h-64 md:h-full min-h-[280px] overflow-hidden bg-muted">
+                  <img src={featured.image_url} alt={featured.title || featured.sector} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-md bg-brand-gold text-brand-gold-foreground px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide">À la une</span>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-brand-blue text-brand-blue-foreground px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide"><Building2 className="h-3 w-3" /> MiPROJET+</span>
+                  </div>
+                </div>
+                <div className="p-6 md:p-8 flex flex-col gap-4">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <ShieldCheck className="h-3.5 w-3.5 text-brand-green" /> Projet certifié · <MapPin className="h-3.5 w-3.5" /> {featured.city_masked}, {featured.country}
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-black leading-tight group-hover:text-brand-blue transition-colors">{featured.title}</h2>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{featured.summary}</p>
+                  <div className="grid grid-cols-3 gap-3 pt-2">
+                    <MiniStat label="Ticket" value={formatEUR(featured.amount_sought_eur)} />
+                    <MiniStat label="Engagé" value={`${featured.progress_percent}%`} />
+                    <MiniStat label="Secteur" value={featured.sector} />
+                  </div>
+                  <div className="mt-auto pt-2">
+                    <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full rounded-full bg-brand-blue" style={{ width: `${featured.progress_percent}%` }} />
+                    </div>
+                    <div className="mt-2 flex items-center justify-between text-xs">
+                      <span className="inline-flex items-center gap-1 text-brand-green font-medium"><TrendingUp className="h-3 w-3" /> Mise en relation ouverte</span>
+                      <span className="text-brand-blue font-semibold">Voir le dossier →</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          )}
+
+          <div className="flex items-center justify-between">
             <div className="text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">{filtered.length}</span> opportunité{filtered.length > 1 ? "s" : ""}
+              <span className="font-semibold text-foreground">{filtered.length}</span> autre{filtered.length > 1 ? "s" : ""} opportunité{filtered.length > 1 ? "s" : ""}
             </div>
             <div className="flex flex-wrap gap-1.5">
               {sector && <ActiveChip label={sector} onClose={() => setSector(null)} />}
               {country && <ActiveChip label={country} onClose={() => setCountry(null)} />}
-              {channel !== "ALL" && <ActiveChip label={channel} onClose={() => setChannel("ALL")} />}
+              {channel !== "ALL" && <ActiveChip label={channel === "GO" ? "MiPROJET Go" : "MiPROJET+"} onClose={() => setChannel("ALL")} />}
             </div>
           </div>
 
@@ -139,6 +182,15 @@ function ProjectsCatalog() {
         </section>
       </div>
     </SiteShell>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">{label}</div>
+      <div className="text-sm font-bold">{value}</div>
+    </div>
   );
 }
 

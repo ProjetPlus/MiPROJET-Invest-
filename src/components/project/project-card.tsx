@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 const CHANNEL_STYLE: Record<string, { bg: string; label: string }> = {
   GO: { bg: "bg-brand-green text-brand-green-foreground", label: "Go" },
   PLUS: { bg: "bg-brand-blue text-brand-blue-foreground", label: "+" },
-  INVEST: { bg: "bg-brand-gold text-brand-gold-foreground", label: "Invest" },
 };
 
 export function ProjectCard({ project }: { project: Project }) {
@@ -23,8 +22,8 @@ export function ProjectCard({ project }: { project: Project }) {
     >
       <div className="relative h-40 overflow-hidden bg-muted">
         <img
-          src={sectorImage(project.sector)}
-          alt={project.sector}
+          src={project.image_url ?? sectorImage(project.sector)}
+          alt={project.title ?? project.sector}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />

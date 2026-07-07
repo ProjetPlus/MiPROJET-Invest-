@@ -1,19 +1,20 @@
-// Mock data — will be replaced by external Supabase (MiPROJET central DB).
-// Projects flow from MiPROJET Go / MiPROJET+ / MiPROJET Invest.
+// Projets — issus de MiPROJET Go et MiPROJET+.
+// MiPROJET Invest est la vitrine d'accès investisseur : elle ne produit pas de projets,
+// elle présente ceux issus de Go et + qui ont atteint le stade « prêts à être financés ».
 
-export type ProjectSource = "GO" | "PLUS" | "INVEST";
-export type ProjectChannel = "GO" | "PLUS" | "INVEST";
+export type ProjectSource = "GO" | "PLUS";
+export type ProjectChannel = "GO" | "PLUS";
 export type ProjectStage = "amorçage" | "croissance" | "expansion" | "scale-up";
 export type VisibilityLevel = 1 | 2 | 3 | 4;
 
 export interface Project {
   id: string;
-  code: string; // anonymized code e.g. MPI-2026-0142
+  code: string;
   sector: string;
   country: string;
   city_masked: string;
-  summary: string; // anonymized description (level 1)
-  detailed_pitch?: string; // level 2+
+  summary: string;
+  detailed_pitch?: string;
   amount_sought_eur: number;
   amount_committed_eur: number;
   stage: ProjectStage;
@@ -26,7 +27,9 @@ export interface Project {
   monthly_revenue_eur?: number;
   monthly_growth_percent?: number;
   documents_count: number;
-  cover_hue: number; // 0-360 for placeholder gradients
+  cover_hue: number;
+  image_url?: string;
+  title?: string;
 }
 
 export const SECTORS = [
@@ -65,8 +68,37 @@ function seeded(i: number, mod: number) {
   return Math.floor(((i * 9301 + 49297) % 233280) / 233280 * mod);
 }
 
-export const PROJECTS: Project[] = Array.from({ length: 24 }, (_, i) => {
-  const source: ProjectSource = i % 3 === 0 ? "GO" : i % 3 === 1 ? "PLUS" : "INVEST";
+import agriCover from "@/assets/agricapital-cover.jpg.asset.json";
+
+const AGRICAPITAL: Project = {
+  id: "b7024000-fc34-4706-8901-2ce092283dbc",
+  code: "MPI-2026-AGRI",
+  title: "AgriCapital — Plantation de Palmier à Huile clé en main",
+  sector: "Agriculture",
+  country: "Côte d'Ivoire",
+  city_masked: "Daloa",
+  summary:
+    "AgriCapital structure et commercialise des plantations de palmier à huile clé en main, avec paiement échelonné sur 34 mois. 100 ha en pépinière (~21 000 plants), 25 ha sécurisés, 300 ha mobilisables.",
+  detailed_pitch:
+    "Modèle éprouvé de plantations intégrées : pépinière active, terres identifiées, équipe expérimentée et partenaires techniques mobilisés. Vision long terme sur 25 ans.",
+  amount_sought_eur: 850000,
+  amount_committed_eur: 320000,
+  stage: "expansion",
+  source: "PLUS",
+  eligible_invest: true,
+  featured: true,
+  validated_at: "2026-05-14",
+  progress_percent: 38,
+  team_size: 14,
+  monthly_revenue_eur: 42000,
+  monthly_growth_percent: 9,
+  documents_count: 12,
+  cover_hue: 120,
+  image_url: agriCover.url,
+};
+
+const GENERATED: Project[] = Array.from({ length: 23 }, (_, i) => {
+  const source: ProjectSource = i % 2 === 0 ? "GO" : "PLUS";
   const sector = SECTORS[seeded(i + 1, SECTORS.length)];
   const country = COUNTRIES[seeded(i + 3, COUNTRIES.length)];
   const stage = STAGES[seeded(i + 7, STAGES.length)];
@@ -81,16 +113,14 @@ export const PROJECTS: Project[] = Array.from({ length: 24 }, (_, i) => {
     summary:
       source === "GO"
         ? `Activité ${sector.toLowerCase()} en phase de croissance initiale. Chiffre d'affaires régulier et clientèle fidèle. Recherche de financement pour équipement et fonds de roulement.`
-        : source === "PLUS"
-        ? `PME structurée du secteur ${sector.toLowerCase()} avec équipe dédiée, gouvernance formalisée et modèle éprouvé. Ouverture de tour pour accélération commerciale et industrielle.`
-        : `Opportunité d'investissement en phase d'accélération dans ${sector.toLowerCase()}. Traction confirmée, projections solides et roadmap validée par notre comité.`,
+        : `PME structurée du secteur ${sector.toLowerCase()} avec équipe dédiée, gouvernance formalisée et modèle éprouvé. Ouverture de tour pour accélération commerciale et industrielle.`,
     detailed_pitch: "Pitch complet, indicateurs financiers, roadmap, structure capitalistique et projections 3 ans.",
     amount_sought_eur: sought,
     amount_committed_eur: committed,
     stage,
     source,
     eligible_invest: true,
-    featured: i < 6,
+    featured: i < 5,
     validated_at: `2026-0${(i % 6) + 1}-1${(i % 9) + 1}`,
     progress_percent: Math.round((committed / sought) * 100),
     team_size: source === "GO" ? 2 + (i % 4) : 6 + (i % 20),
@@ -100,6 +130,8 @@ export const PROJECTS: Project[] = Array.from({ length: 24 }, (_, i) => {
     cover_hue: (i * 37) % 360,
   };
 });
+
+export const PROJECTS: Project[] = [AGRICAPITAL, ...GENERATED];
 
 export const STATS = {
   projects_active: 248,

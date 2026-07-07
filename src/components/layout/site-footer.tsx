@@ -23,10 +23,17 @@ export function SiteFooter() {
         </FooterCol>
 
         <FooterCol title="Écosystème">
-          <FLink to="/ecosysteme">MiPROJET Go</FLink>
-          <FLink to="/ecosysteme">MiPROJET+</FLink>
-          <FLink to="/ecosysteme">MiPROJET Invest</FLink>
+          <FLink to="/ecosysteme">L'écosystème MiPROJET</FLink>
           <FLink to="/a-propos">À propos</FLink>
+          <li>
+            <a href="https://ivoireprojet.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">MiPROJET ↗</a>
+          </li>
+          <li>
+            <a href="https://miprojetgo.ivoireprojet.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">MiPROJET Go ↗</a>
+          </li>
+          <li>
+            <a href="https://miprojetplus.ivoireprojet.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">MiPROJET+ ↗</a>
+          </li>
         </FooterCol>
 
         <FooterCol title="Informations">
