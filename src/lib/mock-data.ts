@@ -1,19 +1,20 @@
-// Mock data — will be replaced by external Supabase (MiPROJET central DB).
-// Projects flow from MiPROJET Go / MiPROJET+ / MiPROJET Invest.
+// Projets — issus de MiPROJET Go et MiPROJET+.
+// MiPROJET Invest est la vitrine d'accès investisseur : elle ne produit pas de projets,
+// elle présente ceux issus de Go et + qui ont atteint le stade « prêts à être financés ».
 
-export type ProjectSource = "GO" | "PLUS" | "INVEST";
-export type ProjectChannel = "GO" | "PLUS" | "INVEST";
+export type ProjectSource = "GO" | "PLUS";
+export type ProjectChannel = "GO" | "PLUS";
 export type ProjectStage = "amorçage" | "croissance" | "expansion" | "scale-up";
 export type VisibilityLevel = 1 | 2 | 3 | 4;
 
 export interface Project {
   id: string;
-  code: string; // anonymized code e.g. MPI-2026-0142
+  code: string;
   sector: string;
   country: string;
   city_masked: string;
-  summary: string; // anonymized description (level 1)
-  detailed_pitch?: string; // level 2+
+  summary: string;
+  detailed_pitch?: string;
   amount_sought_eur: number;
   amount_committed_eur: number;
   stage: ProjectStage;
@@ -26,7 +27,9 @@ export interface Project {
   monthly_revenue_eur?: number;
   monthly_growth_percent?: number;
   documents_count: number;
-  cover_hue: number; // 0-360 for placeholder gradients
+  cover_hue: number;
+  image_url?: string;
+  title?: string;
 }
 
 export const SECTORS = [
