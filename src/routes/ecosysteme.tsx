@@ -37,8 +37,7 @@ function EcoPage() {
         </div>
 
         <div className="mt-10 rounded-2xl border border-brand-blue/30 bg-brand-blue/8 p-6 text-sm">
-          <b>Règle absolue —</b> Aucun projet ne peut être créé, soumis ou onboardé dans MiPROJET Invest.
-          Tous les projets viennent de la base centrale MiPROJET, alimentée par Go et +. Invest est un canal de diffusion et de financement uniquement.
+          <b>Notre engagement —</b> Chaque projet présenté aux investisseurs a été identifié sur le terrain par MiPROJET Go, structuré par MiPROJET+, puis qualifié avant sa diffusion sur Invest.
         </div>
       </div>
     </SiteShell>
