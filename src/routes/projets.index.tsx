@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, SlidersHorizontal, X, Sprout, Building2, Rocket } from "lucide-react";
+import { Search, SlidersHorizontal, X, Sprout, Building2, MapPin, ShieldCheck, TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ProjectCard } from "@/components/project/project-card";
-import { PROJECTS, SECTORS, COUNTRIES, type ProjectChannel } from "@/lib/mock-data";
+import { PROJECTS, SECTORS, COUNTRIES, formatEUR, type ProjectChannel } from "@/lib/mock-data";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/projets/")({
   head: () => ({ meta: [
