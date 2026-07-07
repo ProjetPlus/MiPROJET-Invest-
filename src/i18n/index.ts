@@ -7,7 +7,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 const resources = {
   fr: {
     translation: {
-      nav: { projects: "Projets", ecosystem: "Écosystème", about: "À propos", process: "Processus", premium: "Premium", signIn: "Connexion", join: "Rejoindre" },
+      nav: { home: "Accueil", projects: "Projets", ecosystem: "Écosystème", about: "À propos", process: "Processus", premium: "Premium", signIn: "Connexion", join: "Rejoindre" },
       cta: { discover: "Découvrir", explore: "Explorer", invest: "Investir", seeProjects: "Voir les projets", createAccount: "Créer un compte" },
       hero: {
         badge: "L'écosystème panafricain de l'entrepreneuriat",
