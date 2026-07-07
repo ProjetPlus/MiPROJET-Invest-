@@ -67,10 +67,9 @@ function LandingPage() {
                   alt="Entrepreneurs africains"
                   className="w-full h-[420px] object-cover"
                 />
-                <div className="p-5 border-t border-border grid grid-cols-3 gap-3">
+                <div className="p-5 border-t border-border grid grid-cols-2 gap-3">
                   <QuickTile icon={<Sprout className="h-4 w-4" />} tone="green" label="Go" />
-                  <QuickTile icon={<Building2 className="h-4 w-4" />} tone="blue" label="Plus" />
-                  <QuickTile icon={<Rocket className="h-4 w-4" />} tone="gold" label="Invest" />
+                  <QuickTile icon={<Building2 className="h-4 w-4" />} tone="blue" label="+" />
                 </div>
               </div>
             </div>
