@@ -11,8 +11,8 @@ import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/projets/")({
   head: () => ({ meta: [
-    { title: "Catalogue des opportunités — MiPROJET" },
-    { name: "description", content: "Explorez les opportunités MiPROJET Go, MiPROJET+ et MiPROJET Invest — filtrées par secteur, pays et montant." },
+    { title: "Opportunités d'investissement — MiPROJET Invest" },
+    { name: "description", content: "Découvrez les projets sélectionnés issus de MiPROJET Go et MiPROJET+, prêts à être financés. Filtrez par secteur, pays et montant." },
   ] }),
   component: ProjectsCatalog,
 });
@@ -21,7 +21,6 @@ const CHANNELS: { key: "ALL" | ProjectChannel; label: string; icon: React.ReactN
   { key: "ALL", label: "Tout", icon: null, tone: "" },
   { key: "GO", label: "MiPROJET Go", icon: <Sprout className="h-4 w-4" />, tone: "text-brand-green border-brand-green data-[on=true]:bg-brand-green data-[on=true]:text-brand-green-foreground" },
   { key: "PLUS", label: "MiPROJET+", icon: <Building2 className="h-4 w-4" />, tone: "text-brand-blue border-brand-blue data-[on=true]:bg-brand-blue data-[on=true]:text-brand-blue-foreground" },
-  { key: "INVEST", label: "MiPROJET Invest", icon: <Rocket className="h-4 w-4" />, tone: "text-brand-gold border-brand-gold data-[on=true]:bg-brand-gold data-[on=true]:text-brand-gold-foreground" },
 ];
 
 function ProjectsCatalog() {
@@ -30,30 +29,33 @@ function ProjectsCatalog() {
   const [sector, setSector] = useState<string | null>(null);
   const [country, setCountry] = useState<string | null>(null);
   const [channel, setChannel] = useState<"ALL" | ProjectChannel>("ALL");
-  const [amountMax, setAmountMax] = useState(500000);
+  const [amountMax, setAmountMax] = useState(1000000);
 
+  const featured = PROJECTS.find((p) => p.id === "b7024000-fc34-4706-8901-2ce092283dbc");
   const filtered = useMemo(() => PROJECTS.filter((p) => {
+    if (p.id === featured?.id) return false;
     if (sector && p.sector !== sector) return false;
     if (country && p.country !== country) return false;
     if (channel !== "ALL" && p.source !== channel) return false;
     if (p.amount_sought_eur > amountMax) return false;
     if (q && !(`${p.code} ${p.sector} ${p.country} ${p.summary}`.toLowerCase().includes(q.toLowerCase()))) return false;
     return true;
-  }), [q, sector, country, channel, amountMax]);
+  }), [q, sector, country, channel, amountMax, featured]);
 
-  const hasFilters = !!sector || !!country || channel !== "ALL" || q || amountMax < 500000;
+  const hasFilters = !!sector || !!country || channel !== "ALL" || q || amountMax < 1000000;
 
-  const reset = () => { setSector(null); setCountry(null); setChannel("ALL"); setQ(""); setAmountMax(500000); };
+  const reset = () => { setSector(null); setCountry(null); setChannel("ALL"); setQ(""); setAmountMax(1000000); };
 
   return (
     <SiteShell>
       <div className="border-b border-border bg-background">
         <div className="container-page py-10">
-          <div className="text-xs font-bold uppercase tracking-widest text-brand-blue">Catalogue</div>
-          <h1 className="mt-2 text-3xl md:text-4xl font-black">Opportunités MiPROJET</h1>
+          <div className="text-xs font-bold uppercase tracking-widest text-brand-blue">Opportunités MiPROJET Invest</div>
+          <h1 className="mt-2 text-3xl md:text-4xl font-black">Projets prêts à être financés</h1>
           <p className="mt-2 text-muted-foreground max-w-2xl">
-            Trois canaux, une même chaîne de certification. Choisissez le niveau qui correspond à votre stratégie d'investissement.
+            Une sélection issue des deux canaux de l'écosystème — MiPROJET Go (terrain) et MiPROJET+ (structuration) — qualifiée par notre comité avant présentation aux investisseurs.
           </p>
+
 
           {/* Channel tabs */}
           <div className="mt-6 flex flex-wrap gap-2">
