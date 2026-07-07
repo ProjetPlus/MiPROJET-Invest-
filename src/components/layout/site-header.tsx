@@ -15,6 +15,7 @@ export function SiteHeader() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const NAV = [
+    { to: "/", label: t("nav.home", "Accueil") },
     { to: "/projets", label: t("nav.projects") },
     { to: "/ecosysteme", label: t("nav.ecosystem") },
     { to: "/processus", label: t("nav.process") },
