@@ -21,7 +21,7 @@ const resources = {
         miprojet: { name: "MiPROJET", tag: "Écosystème", desc: "La marque mère : vision, gouvernance et standards." },
         go: { name: "MiPROJET Go", tag: "Terrain", desc: "Micro-activités et entrepreneuriat informel accompagnés." },
         plus: { name: "MiPROJET+", tag: "Structuration", desc: "PME certifiées, gouvernance formalisée, modèle prouvé." },
-        invest: { name: "MiPROJET Invest", tag: "Capital", desc: "Opportunités d'investissement sélectionnées et validées." },
+        invest: { name: "MiPROJET Invest", tag: "Vitrine investisseur", desc: "L'espace qui présente aux investisseurs les projets issus de Go et de + prêts à être financés." },
       },
       projects: {
         title: "Opportunités sélectionnées",
