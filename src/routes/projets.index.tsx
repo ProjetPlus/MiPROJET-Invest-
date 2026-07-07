@@ -116,15 +116,55 @@ function ProjectsCatalog() {
           </div>
         </aside>
 
-        <section>
-          <div className="flex items-center justify-between mb-5">
+        <section className="space-y-8">
+          {featured && (
+            <Link
+              to="/projets/$id"
+              params={{ id: featured.id }}
+              className="group block overflow-hidden rounded-3xl border border-border bg-card shadow-sm hover:shadow-lg transition-all"
+            >
+              <div className="grid md:grid-cols-[1.1fr_1fr]">
+                <div className="relative h-64 md:h-full min-h-[280px] overflow-hidden bg-muted">
+                  <img src={featured.image_url} alt={featured.title || featured.sector} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-md bg-brand-gold text-brand-gold-foreground px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide">À la une</span>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-brand-blue text-brand-blue-foreground px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide"><Building2 className="h-3 w-3" /> MiPROJET+</span>
+                  </div>
+                </div>
+                <div className="p-6 md:p-8 flex flex-col gap-4">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <ShieldCheck className="h-3.5 w-3.5 text-brand-green" /> Projet certifié · <MapPin className="h-3.5 w-3.5" /> {featured.city_masked}, {featured.country}
+                  </div>
+                  <h2 className="text-2xl md:text-3xl font-black leading-tight group-hover:text-brand-blue transition-colors">{featured.title}</h2>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{featured.summary}</p>
+                  <div className="grid grid-cols-3 gap-3 pt-2">
+                    <MiniStat label="Ticket" value={formatEUR(featured.amount_sought_eur)} />
+                    <MiniStat label="Engagé" value={`${featured.progress_percent}%`} />
+                    <MiniStat label="Secteur" value={featured.sector} />
+                  </div>
+                  <div className="mt-auto pt-2">
+                    <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full rounded-full bg-brand-blue" style={{ width: `${featured.progress_percent}%` }} />
+                    </div>
+                    <div className="mt-2 flex items-center justify-between text-xs">
+                      <span className="inline-flex items-center gap-1 text-brand-green font-medium"><TrendingUp className="h-3 w-3" /> Mise en relation ouverte</span>
+                      <span className="text-brand-blue font-semibold">Voir le dossier →</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          )}
+
+          <div className="flex items-center justify-between">
             <div className="text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">{filtered.length}</span> opportunité{filtered.length > 1 ? "s" : ""}
+              <span className="font-semibold text-foreground">{filtered.length}</span> autre{filtered.length > 1 ? "s" : ""} opportunité{filtered.length > 1 ? "s" : ""}
             </div>
             <div className="flex flex-wrap gap-1.5">
               {sector && <ActiveChip label={sector} onClose={() => setSector(null)} />}
               {country && <ActiveChip label={country} onClose={() => setCountry(null)} />}
-              {channel !== "ALL" && <ActiveChip label={channel} onClose={() => setChannel("ALL")} />}
+              {channel !== "ALL" && <ActiveChip label={channel === "GO" ? "MiPROJET Go" : "MiPROJET+"} onClose={() => setChannel("ALL")} />}
             </div>
           </div>
 
@@ -142,6 +182,15 @@ function ProjectsCatalog() {
         </section>
       </div>
     </SiteShell>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">{label}</div>
+      <div className="text-sm font-bold">{value}</div>
+    </div>
   );
 }
 
