@@ -116,7 +116,7 @@ function DashboardPage() {
         </section>
 
         <div className="text-xs text-center text-muted-foreground inline-flex items-center gap-1.5 w-full justify-center">
-          <ShieldCheck className="h-3.5 w-3.5" /> Interface de démonstration — les données seront reliées à la base MiPROJET centrale.
+          <ShieldCheck className="h-3.5 w-3.5" /> Espace investisseur sécurisé — accès contrôlé par MiPROJET.
         </div>
       </div>
     </SiteShell>
