@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/layout/site-shell";
-import { DEMANDES, formatEUR } from "@/lib/mock-data";
+import { formatEUR } from "@/lib/mock-data";
+import { useDemandes, demandesStore } from "@/lib/demandes-store";
+import { useMockUser, isAdmin } from "@/lib/auth-store";
 import { StatusBadge } from "./tableau-de-bord";
-import { CheckCircle2, Clock, Shield, Building2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, Clock, Shield, Building2, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/demandes")({
   head: () => ({ meta: [{ title: "Mes demandes de mise en relation — MiPROJET Invest" }, { name: "description", content: "Suivez le workflow de vos demandes de mise en relation contrôlées par MiPROJET." }] }),
@@ -17,6 +20,9 @@ const WORKFLOW = [
 ];
 
 function DemandesPage() {
+  const demandes = useDemandes();
+  const user = useMockUser();
+  const admin = isAdmin(user);
   return (
     <SiteShell>
       <div className="container-page py-10">
@@ -42,7 +48,10 @@ function DemandesPage() {
             <h2 className="text-lg font-bold">Demandes actives</h2>
           </div>
           <div className="divide-y divide-border">
-            {DEMANDES.map((d) => {
+            {demandes.length === 0 && (
+              <div className="p-8 text-center text-sm text-muted-foreground">Aucune demande pour l'instant.</div>
+            )}
+            {demandes.map((d) => {
               const step = d.status === "channel_open" ? 4 : d.status === "porteur_review" ? 3 : d.status === "miprojet_review" ? 2 : 1;
               return (
                 <div key={d.id} className="p-5 grid md:grid-cols-[1fr_auto] gap-4 items-center">
@@ -57,15 +66,22 @@ function DemandesPage() {
                       {[1, 2, 3, 4].map((n) => (
                         <div
                           key={n}
-                          className={`h-1.5 flex-1 rounded-full ${n <= step ? "bg-brand-blue" : "bg-muted"}`}
+                          className={`h-1.5 flex-1 rounded-full ${n <= step ? "bg-brand-gold" : "bg-muted"}`}
                         />
                       ))}
                     </div>
                     <div className="mt-2 text-xs text-muted-foreground">Créée le {d.created_at} · Dernière MAJ {d.last_update}</div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-xs text-muted-foreground">Ticket envisagé</div>
-                    <div className="text-lg font-bold">{formatEUR(d.amount_eur)}</div>
+                  <div className="text-right flex flex-col items-end gap-2">
+                    <div>
+                      <div className="text-xs text-muted-foreground">Ticket envisagé</div>
+                      <div className="text-lg font-bold">{formatEUR(d.amount_eur)}</div>
+                    </div>
+                    {admin && d.status !== "channel_open" && (
+                      <Button size="sm" variant="outline" className="gap-1" onClick={() => demandesStore.advance(d.id)}>
+                        Faire avancer <ArrowRight className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
                   </div>
                 </div>
               );

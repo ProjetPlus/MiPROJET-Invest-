@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
-import { PROJECTS, DEMANDES, formatEUR } from "@/lib/mock-data";
+import { PROJECTS, formatEUR } from "@/lib/mock-data";
 import { useMockUser, mockAuth, visibilityLevelFor } from "@/lib/auth-store";
+import { useNotifications, notifStore, useDemandes } from "@/lib/demandes-store";
 import { ProjectCard } from "@/components/project/project-card";
-import { Bookmark, Bell, ShieldCheck, TrendingUp, Wallet, MailQuestion } from "lucide-react";
+import { Bookmark, Bell, ShieldCheck, TrendingUp, Wallet, MailQuestion, Crown } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/tableau-de-bord")({
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/tableau-de-bord")({
 function DashboardPage() {
   const user = useMockUser();
   const nav = useNavigate();
+  const demandes = useDemandes();
   useEffect(() => { if (typeof window !== "undefined" && !user) nav({ to: "/auth" }); }, [user, nav]);
   if (!user) return null;
 
@@ -45,7 +47,7 @@ function DashboardPage() {
       <div className="container-page py-8 space-y-10">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <KPI icon={<Bookmark className="h-4 w-4" />} tone="blue" label="Favoris" value="4" />
-          <KPI icon={<MailQuestion className="h-4 w-4" />} tone="green" label="Demandes actives" value={String(DEMANDES.length)} />
+          <KPI icon={<MailQuestion className="h-4 w-4" />} tone="green" label="Demandes actives" value={String(demandes.length)} />
           <KPI icon={<Wallet className="h-4 w-4" />} tone="gold" label="Ticket cumulé cible" value={formatEUR(202000)} />
           <KPI icon={<TrendingUp className="h-4 w-4" />} tone="blue" label="Rendement projeté" value="+14%" />
         </div>
@@ -77,7 +79,7 @@ function DashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {DEMANDES.map((d) => (
+                {demandes.map((d) => (
                   <tr key={d.id} className="border-t border-border">
                     <td className="p-3 font-mono text-xs">{d.project_code}</td>
                     <td className="p-3 hidden md:table-cell">{d.sector}</td>
@@ -101,25 +103,57 @@ function DashboardPage() {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-border bg-card p-6">
-          <div className="flex items-start gap-4">
-            <div className="h-10 w-10 rounded-xl bg-brand-blue/10 text-brand-blue grid place-items-center"><Bell className="h-5 w-5" /></div>
-            <div className="flex-1">
-              <h2 className="text-lg font-bold">Alertes MiPROJET</h2>
-              <ul className="mt-3 space-y-2 text-sm">
-                <li className="rounded-xl border border-border p-3">🟢 <b>MPI-2026-0141</b> — Canal sécurisé ouvert avec le porteur.</li>
-                <li className="rounded-xl border border-border p-3">🟡 <b>MPI-2026-0148</b> — En attente de validation par le porteur.</li>
-                <li className="rounded-xl border border-border p-3">🔵 3 nouveaux projets Fintech certifiés cette semaine.</li>
-              </ul>
+        <NotificationsPanel />
+
+        {!user.admin && (
+          <div className="rounded-3xl border border-brand-gold/30 bg-brand-gold/5 p-5 flex flex-wrap items-center gap-3 justify-between">
+            <div className="text-sm">
+              <div className="font-semibold inline-flex items-center gap-1.5"><Crown className="h-4 w-4 text-brand-gold" /> Mode démo — accès total</div>
+              <div className="text-xs text-muted-foreground">Activer un compte administrateur pour tester l'accès complet.</div>
             </div>
+            <Button size="sm" variant="outline" onClick={() => mockAuth.becomeAdmin()}>Activer accès total</Button>
           </div>
-        </section>
+        )}
 
         <div className="text-xs text-center text-muted-foreground inline-flex items-center gap-1.5 w-full justify-center">
           <ShieldCheck className="h-3.5 w-3.5" /> Espace investisseur sécurisé — accès contrôlé par MiPROJET.
         </div>
       </div>
     </SiteShell>
+  );
+}
+
+function NotificationsPanel() {
+  const notifs = useNotifications();
+  return (
+    <section className="rounded-3xl border border-border bg-card p-6">
+      <div className="flex items-start gap-4">
+        <div className="h-10 w-10 rounded-xl bg-brand-gold/10 text-brand-gold grid place-items-center"><Bell className="h-5 w-5" /></div>
+        <div className="flex-1">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-bold">Notifications</h2>
+            {notifs.some((n) => !n.read) && (
+              <button className="text-xs text-muted-foreground hover:text-foreground" onClick={() => notifStore.markAllRead()}>
+                Tout marquer comme lu
+              </button>
+            )}
+          </div>
+          <ul className="mt-3 space-y-2 text-sm">
+            {notifs.length === 0 && (
+              <li className="rounded-xl border border-dashed border-border p-4 text-center text-muted-foreground text-xs">
+                Aucune notification pour l'instant. Faites une demande de mise en relation pour être notifié ici.
+              </li>
+            )}
+            {notifs.map((n) => (
+              <li key={n.id} className={`rounded-xl border p-3 ${n.read ? "border-border" : "border-brand-gold/40 bg-brand-gold/5"}`}>
+                <div className="font-semibold">{n.title}</div>
+                <div className="text-xs text-muted-foreground mt-0.5">{n.body}</div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
   );
 }
 

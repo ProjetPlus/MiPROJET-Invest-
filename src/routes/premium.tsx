@@ -56,8 +56,9 @@ function PremiumPage() {
             <Button
               onClick={() => { if (!user) mockAuth.signIn("demo@miprojet.com"); mockAuth.becomePremium(); }}
               className="w-full mt-8 bg-brand-gold text-brand-gold-foreground hover:bg-brand-gold/90"
+              disabled={user?.admin || user?.premium}
             >
-              {user?.premium ? "✓ Premium actif" : "Passer Premium"}
+              {user?.admin ? "✓ Accès total (admin)" : user?.premium ? "✓ Premium actif" : "Passer Premium"}
             </Button>
           </div>
         </div>
