@@ -1,7 +1,7 @@
 // Mock auth store — UI-only. Real auth will use external Supabase later.
 import { useSyncExternalStore } from "react";
 
-export type UserRole = "guest" | "user" | "verified_investor" | "premium_investor";
+export type UserRole = "guest" | "user" | "verified_investor" | "premium_investor" | "admin";
 
 export interface MockUser {
   email: string;
@@ -9,6 +9,7 @@ export interface MockUser {
   role: UserRole;
   verified: boolean;
   premium: boolean;
+  admin?: boolean;
 }
 
 const STORAGE_KEY = "mpi_mock_user";
@@ -40,7 +41,15 @@ export const mockAuth = {
     return read();
   },
   signIn(email: string, name = "Investisseur") {
-    const u: MockUser = { email, name, role: "user", verified: false, premium: false };
+    const isAdmin = /admin@|@miprojet\.ci$|@ivoireprojet\.com$/i.test(email);
+    const u: MockUser = {
+      email,
+      name,
+      role: isAdmin ? "admin" : "user",
+      verified: isAdmin,
+      premium: isAdmin,
+      admin: isAdmin,
+    };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
     emit();
   },
@@ -51,14 +60,21 @@ export const mockAuth = {
   becomeVerified() {
     const u = read();
     if (!u) return;
-    const nu: MockUser = { ...u, verified: true, role: "verified_investor" };
+    const nu: MockUser = { ...u, verified: true, role: u.admin ? "admin" : "verified_investor" };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(nu));
     emit();
   },
   becomePremium() {
     const u = read();
     if (!u) return;
-    const nu: MockUser = { ...u, premium: true, verified: true, role: "premium_investor" };
+    const nu: MockUser = { ...u, premium: true, verified: true, role: u.admin ? "admin" : "premium_investor" };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(nu));
+    emit();
+  },
+  becomeAdmin() {
+    const u = read();
+    if (!u) return;
+    const nu: MockUser = { ...u, admin: true, verified: true, premium: true, role: "admin" };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(nu));
     emit();
   },
@@ -78,7 +94,12 @@ export function useMockUser(): MockUser | null {
 
 export function visibilityLevelFor(user: MockUser | null): 1 | 2 | 3 | 4 {
   if (!user) return 1;
+  if (user.admin) return 4;
   if (user.premium) return 4;
   if (user.verified) return 3;
   return 2;
+}
+
+export function isAdmin(user: MockUser | null): boolean {
+  return !!user?.admin;
 }

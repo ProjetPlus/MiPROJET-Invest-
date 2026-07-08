@@ -8,7 +8,8 @@ import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
 import { PROJECTS, formatEUR } from "@/lib/mock-data";
 import { sectorImage } from "@/lib/sector-images";
-import { useMockUser, visibilityLevelFor, mockAuth } from "@/lib/auth-store";
+import { useMockUser, visibilityLevelFor, mockAuth, isAdmin } from "@/lib/auth-store";
+import { demandesStore } from "@/lib/demandes-store";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/projets/$id")({
@@ -44,8 +45,20 @@ function ProjectDetail() {
   const { project } = Route.useLoaderData();
   const user = useMockUser();
   const level = visibilityLevelFor(user);
+  const admin = isAdmin(user);
   const [saved, setSaved] = useState(false);
   const [demandeSent, setDemandeSent] = useState(false);
+
+  const handleDemande = () => {
+    if (!user) return;
+    demandesStore.create({
+      project_code: project.code,
+      sector: project.sector,
+      amount_eur: Math.round(project.amount_sought_eur / 8),
+    });
+    setDemandeSent(true);
+  };
+
 
   return (
     <SiteShell>
@@ -117,10 +130,17 @@ function ProjectDetail() {
               </Section>
               <Section title="Espace documentaire">
                 <div className="rounded-2xl border border-border p-4 space-y-2">
-                  {Array.from({ length: project.documents_count }).map((_, i) => (
-                    <DocRow key={i} name={`Document confidentiel ${i + 1}.pdf`} unlocked={level >= 4} />
-                  ))}
+                  {Array.from({ length: project.documents_count }).map((_, i) => {
+                    // Progressive unlock: first 2 for verified, all for premium/admin
+                    const unlocked = admin || level >= 4 || i < 2;
+                    return <DocRow key={i} name={`Document confidentiel ${i + 1}.pdf`} unlocked={unlocked} />;
+                  })}
                 </div>
+                {!admin && level < 4 && (
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    Aperçu limité aux 2 premiers documents. Passez Premium pour accéder à l'intégralité du dossier.
+                  </p>
+                )}
               </Section>
             </>
           ) : (
@@ -154,9 +174,9 @@ function ProjectDetail() {
 
             <div className="space-y-2 pt-2">
               <Button
-                onClick={() => setDemandeSent(true)}
+                onClick={handleDemande}
                 disabled={demandeSent || !user}
-                className="w-full bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90 gap-2"
+                className="w-full bg-brand-gold text-brand-gold-foreground hover:bg-brand-gold/90 gap-2"
               >
                 {demandeSent ? <><CheckCircle2 className="h-4 w-4" /> Demande envoyée</> : <><Send className="h-4 w-4" /> Demander une mise en relation</>}
               </Button>
