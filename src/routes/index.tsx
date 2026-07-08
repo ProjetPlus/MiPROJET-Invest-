@@ -176,9 +176,19 @@ function QuickTile({ icon, label, tone }: { icon: React.ReactNode; label: string
   );
 }
 
-function UniverseCard({ icon, name, tag, desc, tone }: { icon: React.ReactNode; name: string; tag: string; desc: string; tone: "blue" | "green" | "gold" | "neutral" }) {
-  const border = tone === "green" ? "border-brand-green/30 hover:border-brand-green" : tone === "gold" ? "border-brand-gold/40 hover:border-brand-gold" : tone === "blue" ? "border-brand-blue/30 hover:border-brand-blue" : "border-border hover:border-foreground/30";
-  const chip = tone === "green" ? "bg-brand-green/10 text-brand-green" : tone === "gold" ? "bg-brand-gold/15 text-brand-gold-foreground" : tone === "blue" ? "bg-brand-blue/10 text-brand-blue" : "bg-muted text-foreground";
+function UniverseCard({ icon, name, tag, desc, tone }: { icon: React.ReactNode; name: string; tag: string; desc: string; tone: "blue" | "green" | "gold" | "orange" | "neutral" }) {
+  const border =
+    tone === "green" ? "border-brand-green/30 hover:border-brand-green"
+    : tone === "gold" ? "border-brand-gold/40 hover:border-brand-gold"
+    : tone === "orange" ? "border-brand-orange/40 hover:border-brand-orange"
+    : tone === "blue" ? "border-brand-blue/30 hover:border-brand-blue"
+    : "border-border hover:border-foreground/30";
+  const chip =
+    tone === "green" ? "bg-brand-green/10 text-brand-green"
+    : tone === "gold" ? "bg-brand-gold/15 text-brand-gold-foreground"
+    : tone === "orange" ? "bg-brand-orange/12 text-brand-orange"
+    : tone === "blue" ? "bg-brand-blue/10 text-brand-blue"
+    : "bg-muted text-foreground";
   return (
     <div className={`rounded-2xl border ${border} bg-card p-6 transition-colors`}>
       <div className={`inline-flex items-center gap-2 rounded-md px-2 py-1 text-[11px] font-bold uppercase tracking-wide ${chip}`}>{icon}{tag}</div>
