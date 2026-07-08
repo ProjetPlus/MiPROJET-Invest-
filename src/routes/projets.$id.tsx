@@ -7,6 +7,7 @@ import {
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
 import { PROJECTS, formatEUR } from "@/lib/mock-data";
+import { sectorImage } from "@/lib/sector-images";
 import { useMockUser, visibilityLevelFor, mockAuth } from "@/lib/auth-store";
 import { cn } from "@/lib/utils";
 
@@ -56,15 +57,18 @@ function ProjectDetail() {
 
       {/* HERO */}
       <div className="container-page pt-4">
-        <div
-          className="relative overflow-hidden rounded-3xl h-52 md:h-64 gradient-brand"
-          style={{ filter: `hue-rotate(${project.cover_hue}deg)` }}
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.35),transparent_60%)]" />
+        <div className="relative overflow-hidden rounded-3xl h-52 md:h-72 bg-muted">
+          <img
+            src={project.image_url ?? sectorImage(project.sector, 1400)}
+            alt={project.title ?? project.sector}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-6 flex flex-wrap items-end justify-between gap-3 text-white">
             <div>
               <div className="text-xs font-mono opacity-80">{project.code}</div>
-              <div className="mt-1 text-2xl md:text-3xl font-black">{project.sector}</div>
+              <div className="mt-1 text-2xl md:text-3xl font-black">{project.title ?? project.sector}</div>
               <div className="mt-1 inline-flex items-center gap-1 text-sm opacity-90"><MapPin className="h-4 w-4" /> {project.country}</div>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -72,7 +76,7 @@ function ProjectDetail() {
                 {project.source === "GO" ? <><Sprout className="h-3.5 w-3.5" /> MiPROJET Go</> : <><Building2 className="h-3.5 w-3.5" /> MiPROJET+</>}
               </span>
               <span className="inline-flex items-center gap-1 rounded-full bg-brand-gold text-brand-gold-foreground px-3 py-1.5 text-xs font-bold">
-                <ShieldCheck className="h-3.5 w-3.5" /> Éligible Invest
+                <ShieldCheck className="h-3.5 w-3.5" /> Certifié
               </span>
             </div>
           </div>
@@ -120,7 +124,7 @@ function ProjectDetail() {
               </Section>
             </>
           ) : (
-            <LockedSection reason="Devenez investisseur vérifié pour accéder au pitch complet, aux analyses et à la Espace documentaire." canUpgrade />
+            <LockedSection reason="Devenez investisseur vérifié pour accéder au pitch complet, aux analyses et à l'espace documentaire." canUpgrade />
           )}
         </div>
 
@@ -248,14 +252,14 @@ function DocRow({ name, unlocked }: { name: string; unlocked: boolean }) {
 
 function LevelBadge({ level }: { level: 1 | 2 | 3 | 4 }) {
   const cfg = {
-    1: { c: "bg-slate-500", t: "Aperçu Public · Public — Aperçu anonymisé" },
-    2: { c: "bg-brand-blue", t: "Accès Membre · Connecté — Détails étendus" },
-    3: { c: "bg-brand-green", t: "Accès Vérifié · Investisseur vérifié — Analyses" },
-    4: { c: "bg-brand-brick", t: "Accès Premium · Mise en relation contrôlée" },
+    1: { c: "bg-slate-500", t: "Aperçu public" },
+    2: { c: "bg-brand-blue text-white", t: "Accès membre" },
+    3: { c: "bg-brand-green text-white", t: "Investisseur vérifié" },
+    4: { c: "bg-brand-gold text-brand-gold-foreground", t: "Accès Premium" },
   }[level];
   return (
     <div className="flex items-center gap-2 text-xs">
-      <span className={`inline-flex items-center gap-1.5 rounded-full text-white px-3 py-1 font-semibold ${cfg.c}`}>
+      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-semibold ${cfg.c}`}>
         <AlertCircle className="h-3.5 w-3.5" /> {cfg.t}
       </span>
     </div>

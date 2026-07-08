@@ -76,8 +76,8 @@
   /* brick red from "Entrepreneuriat jeune" */
   --brand-brick: oklch(0.5 0.15 35);
 
-  --primary: var(--brand-blue);
-  --primary-foreground: var(--brand-blue-foreground);
+  --primary: var(--brand-gold);
+  --primary-foreground: var(--brand-gold-foreground);
   --secondary: oklch(0.96 0.01 245);
   --secondary-foreground: oklch(0.22 0.05 260);
   --muted: oklch(0.965 0.008 245);
@@ -93,7 +93,7 @@
 
   --border: oklch(0.9 0.015 250);
   --input: oklch(0.9 0.015 250);
-  --ring: oklch(0.42 0.19 262);
+  --ring: oklch(0.76 0.15 82);
 
   --sidebar: oklch(0.99 0.005 240);
   --sidebar-foreground: oklch(0.18 0.04 260);
