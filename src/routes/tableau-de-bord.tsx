@@ -2,10 +2,10 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
 import { PROJECTS, formatEUR } from "@/lib/mock-data";
-import { useMockUser, mockAuth, visibilityLevelFor, isAdmin } from "@/lib/auth-store";
-import { useNotifications, notifStore } from "@/lib/demandes-store";
+import { useMockUser, mockAuth, visibilityLevelFor } from "@/lib/auth-store";
+import { useNotifications, notifStore, useDemandes } from "@/lib/demandes-store";
 import { ProjectCard } from "@/components/project/project-card";
-import { Bell, ShieldCheck, Crown } from "lucide-react";
+import { Bookmark, Bell, ShieldCheck, TrendingUp, Wallet, MailQuestion, Crown } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/tableau-de-bord")({
@@ -16,6 +16,7 @@ export const Route = createFileRoute("/tableau-de-bord")({
 function DashboardPage() {
   const user = useMockUser();
   const nav = useNavigate();
+  const demandes = useDemandes();
   useEffect(() => { if (typeof window !== "undefined" && !user) nav({ to: "/auth" }); }, [user, nav]);
   if (!user) return null;
 
@@ -46,7 +47,7 @@ function DashboardPage() {
       <div className="container-page py-8 space-y-10">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <KPI icon={<Bookmark className="h-4 w-4" />} tone="blue" label="Favoris" value="4" />
-          <KPI icon={<MailQuestion className="h-4 w-4" />} tone="green" label="Demandes actives" value={String(DEMANDES.length)} />
+          <KPI icon={<MailQuestion className="h-4 w-4" />} tone="green" label="Demandes actives" value={String(demandes.length)} />
           <KPI icon={<Wallet className="h-4 w-4" />} tone="gold" label="Ticket cumulé cible" value={formatEUR(202000)} />
           <KPI icon={<TrendingUp className="h-4 w-4" />} tone="blue" label="Rendement projeté" value="+14%" />
         </div>
@@ -78,7 +79,7 @@ function DashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {DEMANDES.map((d) => (
+                {demandes.map((d) => (
                   <tr key={d.id} className="border-t border-border">
                     <td className="p-3 font-mono text-xs">{d.project_code}</td>
                     <td className="p-3 hidden md:table-cell">{d.sector}</td>
