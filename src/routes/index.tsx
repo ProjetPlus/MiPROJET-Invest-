@@ -29,25 +29,25 @@ function LandingPage() {
         <div className="container-page pt-16 pb-20 lg:pt-24 lg:pb-24">
           <div className="grid lg:grid-cols-[1.15fr_1fr] gap-14 items-center">
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1.5 text-xs font-semibold text-brand-blue">
+              <div className="inline-flex items-center gap-2 rounded-full border border-brand-gold/40 bg-brand-gold/10 px-3 py-1.5 text-xs font-semibold text-brand-gold-foreground">
                 <Compass className="h-3.5 w-3.5" />
                 {t("hero.badge")}
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.05]">
                 {t("hero.title1")}{" "}
-                <span className="text-brand-green">{t("hero.title2")}</span>
+                <span className="text-gradient-brand">{t("hero.title2")}</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
                 {t("hero.subtitle")}
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link to="/projets">
-                  <Button size="lg" className="bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90 gap-2">
+                  <Button size="lg" className="bg-brand-gold text-brand-gold-foreground hover:bg-brand-gold/90 gap-2 font-semibold shadow-sm">
                     {t("cta.explore")} <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
                 <Link to="/auth">
-                  <Button size="lg" variant="outline" className="border-brand-green text-brand-green hover:bg-brand-green hover:text-brand-green-foreground">
+                  <Button size="lg" variant="outline" className="border-brand-blue text-brand-blue hover:bg-brand-blue hover:text-brand-blue-foreground">
                     {t("cta.invest")}
                   </Button>
                 </Link>

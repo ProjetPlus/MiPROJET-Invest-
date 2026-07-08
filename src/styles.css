@@ -36,6 +36,8 @@
   --color-brand-green-foreground: var(--brand-green-foreground);
   --color-brand-gold: var(--brand-gold);
   --color-brand-gold-foreground: var(--brand-gold-foreground);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-orange-foreground: var(--brand-orange-foreground);
   --color-brand-brick: var(--brand-brick);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
@@ -70,9 +72,12 @@
   /* green #16A34A */
   --brand-green: oklch(0.62 0.18 145);
   --brand-green-foreground: oklch(0.99 0.005 240);
-  /* gold #D4A017 */
+  /* gold #D4A017 — dominante MiPROJET Invest (diamant) */
   --brand-gold: oklch(0.76 0.15 82);
   --brand-gold-foreground: oklch(0.22 0.05 60);
+  /* orange #F97316 — dominante MiPROJET+ */
+  --brand-orange: oklch(0.7 0.19 45);
+  --brand-orange-foreground: oklch(0.99 0.005 60);
   /* brick red from "Entrepreneuriat jeune" */
   --brand-brick: oklch(0.5 0.15 35);
 
@@ -119,6 +124,8 @@
   --brand-green-foreground: oklch(0.14 0.03 260);
   --brand-gold: oklch(0.82 0.16 82);
   --brand-gold-foreground: oklch(0.14 0.03 60);
+  --brand-orange: oklch(0.78 0.18 45);
+  --brand-orange-foreground: oklch(0.14 0.03 40);
   --brand-brick: oklch(0.65 0.17 35);
 
   --primary: var(--brand-blue);
