@@ -88,7 +88,7 @@ function LandingPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           <UniverseCard tone="neutral" icon={<Layers className="h-5 w-5" />} name={t("universe.miprojet.name")} tag={t("universe.miprojet.tag")} desc={t("universe.miprojet.desc")} />
           <UniverseCard tone="green" icon={<Sprout className="h-5 w-5" />} name={t("universe.go.name")} tag={t("universe.go.tag")} desc={t("universe.go.desc")} />
-          <UniverseCard tone="blue" icon={<Building2 className="h-5 w-5" />} name={t("universe.plus.name")} tag={t("universe.plus.tag")} desc={t("universe.plus.desc")} />
+          <UniverseCard tone="orange" icon={<Building2 className="h-5 w-5" />} name={t("universe.plus.name")} tag={t("universe.plus.tag")} desc={t("universe.plus.desc")} />
           <UniverseCard tone="gold" icon={<Rocket className="h-5 w-5" />} name={t("universe.invest.name")} tag={t("universe.invest.tag")} desc={t("universe.invest.desc")} />
         </div>
       </section>
