@@ -115,7 +115,8 @@ function ProjectsCatalog() {
 
             <div className="relative">
               <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Rechercher..." className="pl-9" />
+              <label htmlFor="project-search" className="sr-only">Rechercher un projet</label>
+              <Input id="project-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Rechercher..." className="pl-9" aria-label="Rechercher un projet" />
             </div>
 
             <FilterGroup label="Secteur">
