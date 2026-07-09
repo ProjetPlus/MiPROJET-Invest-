@@ -80,14 +80,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "MiPROJET Invest — Investir dans l'Afrique qui se construit" },
       { name: "description", content: "L'écosystème panafricain qui connecte investisseurs et projets certifiés. Opportunités sélectionnées, rendement structuré, portée continentale." },
       { name: "author", content: "MiPROJET" },
-      { property: "og:title", content: "MiPROJET Invest — Investir dans l'Afrique qui se construit" },
-      { property: "og:description", content: "L'écosystème panafricain qui connecte investisseurs et projets certifiés. Opportunités sélectionnées, rendement structuré, portée continentale." },
+      { property: "og:site_name", content: "MiPROJET Invest" },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "fr_FR" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "MiPROJET Invest — Investir dans l'Afrique qui se construit" },
-      { name: "twitter:description", content: "L'écosystème panafricain qui connecte investisseurs et projets certifiés. Opportunités sélectionnées, rendement structuré, portée continentale." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/OI6nUHN0rMdlKjHmlXGUEQqHcM52/social-images/social-1783297690531-243419.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/OI6nUHN0rMdlKjHmlXGUEQqHcM52/social-images/social-1783297690531-243419.webp" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -95,6 +91,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800;900&display=swap" },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://miprojetinvest.lovable.app/#organization",
+              name: "MiPROJET",
+              url: "https://miprojetinvest.lovable.app",
+              description: "Écosystème panafricain de mise en relation entre investisseurs et projets certifiés.",
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://miprojetinvest.lovable.app/#website",
+              name: "MiPROJET Invest",
+              url: "https://miprojetinvest.lovable.app",
+              inLanguage: "fr",
+              publisher: { "@id": "https://miprojetinvest.lovable.app/#organization" },
+            },
+          ],
+        }),
+      },
     ],
   }),
   shellComponent: RootShell,

@@ -10,12 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SecuriteRouteImport } from './routes/securite'
 import { Route as SecteursRouteImport } from './routes/secteurs'
 import { Route as ProjetsRouteImport } from './routes/projets'
 import { Route as ProcessusRouteImport } from './routes/processus'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as GuideInvestissementAfriqueRouteImport } from './routes/guide-investissement-afrique'
 import { Route as FavorisRouteImport } from './routes/favoris'
 import { Route as EcosystemeRouteImport } from './routes/ecosysteme'
 import { Route as DemandesRouteImport } from './routes/demandes'
@@ -31,6 +33,11 @@ import { Route as DataRoomIdRouteImport } from './routes/data-room.$id'
 const TableauDeBordRoute = TableauDeBordRouteImport.update({
   id: '/tableau-de-bord',
   path: '/tableau-de-bord',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SecuriteRoute = SecuriteRouteImport.update({
@@ -63,6 +70,12 @@ const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
   path: '/mentions-legales',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuideInvestissementAfriqueRoute =
+  GuideInvestissementAfriqueRouteImport.update({
+    id: '/guide-investissement-afrique',
+    path: '/guide-investissement-afrique',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const FavorisRoute = FavorisRouteImport.update({
   id: '/favoris',
   path: '/favoris',
@@ -128,12 +141,14 @@ export interface FileRoutesByFullPath {
   '/demandes': typeof DemandesRoute
   '/ecosysteme': typeof EcosystemeRoute
   '/favoris': typeof FavorisRoute
+  '/guide-investissement-afrique': typeof GuideInvestissementAfriqueRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/processus': typeof ProcessusRoute
   '/projets': typeof ProjetsRouteWithChildren
   '/secteurs': typeof SecteursRoute
   '/securite': typeof SecuriteRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/data-room/$id': typeof DataRoomIdRoute
   '/projets/$id': typeof ProjetsIdRoute
@@ -148,11 +163,13 @@ export interface FileRoutesByTo {
   '/demandes': typeof DemandesRoute
   '/ecosysteme': typeof EcosystemeRoute
   '/favoris': typeof FavorisRoute
+  '/guide-investissement-afrique': typeof GuideInvestissementAfriqueRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/processus': typeof ProcessusRoute
   '/secteurs': typeof SecteursRoute
   '/securite': typeof SecuriteRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/data-room/$id': typeof DataRoomIdRoute
   '/projets/$id': typeof ProjetsIdRoute
@@ -168,12 +185,14 @@ export interface FileRoutesById {
   '/demandes': typeof DemandesRoute
   '/ecosysteme': typeof EcosystemeRoute
   '/favoris': typeof FavorisRoute
+  '/guide-investissement-afrique': typeof GuideInvestissementAfriqueRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/premium': typeof PremiumRoute
   '/processus': typeof ProcessusRoute
   '/projets': typeof ProjetsRouteWithChildren
   '/secteurs': typeof SecteursRoute
   '/securite': typeof SecuriteRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/data-room/$id': typeof DataRoomIdRoute
   '/projets/$id': typeof ProjetsIdRoute
@@ -190,12 +209,14 @@ export interface FileRouteTypes {
     | '/demandes'
     | '/ecosysteme'
     | '/favoris'
+    | '/guide-investissement-afrique'
     | '/mentions-legales'
     | '/premium'
     | '/processus'
     | '/projets'
     | '/secteurs'
     | '/securite'
+    | '/sitemap.xml'
     | '/tableau-de-bord'
     | '/data-room/$id'
     | '/projets/$id'
@@ -210,11 +231,13 @@ export interface FileRouteTypes {
     | '/demandes'
     | '/ecosysteme'
     | '/favoris'
+    | '/guide-investissement-afrique'
     | '/mentions-legales'
     | '/premium'
     | '/processus'
     | '/secteurs'
     | '/securite'
+    | '/sitemap.xml'
     | '/tableau-de-bord'
     | '/data-room/$id'
     | '/projets/$id'
@@ -229,12 +252,14 @@ export interface FileRouteTypes {
     | '/demandes'
     | '/ecosysteme'
     | '/favoris'
+    | '/guide-investissement-afrique'
     | '/mentions-legales'
     | '/premium'
     | '/processus'
     | '/projets'
     | '/secteurs'
     | '/securite'
+    | '/sitemap.xml'
     | '/tableau-de-bord'
     | '/data-room/$id'
     | '/projets/$id'
@@ -250,12 +275,14 @@ export interface RootRouteChildren {
   DemandesRoute: typeof DemandesRoute
   EcosystemeRoute: typeof EcosystemeRoute
   FavorisRoute: typeof FavorisRoute
+  GuideInvestissementAfriqueRoute: typeof GuideInvestissementAfriqueRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   PremiumRoute: typeof PremiumRoute
   ProcessusRoute: typeof ProcessusRoute
   ProjetsRoute: typeof ProjetsRouteWithChildren
   SecteursRoute: typeof SecteursRoute
   SecuriteRoute: typeof SecuriteRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
   DataRoomIdRoute: typeof DataRoomIdRoute
 }
@@ -267,6 +294,13 @@ declare module '@tanstack/react-router' {
       path: '/tableau-de-bord'
       fullPath: '/tableau-de-bord'
       preLoaderRoute: typeof TableauDeBordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/securite': {
@@ -309,6 +343,13 @@ declare module '@tanstack/react-router' {
       path: '/mentions-legales'
       fullPath: '/mentions-legales'
       preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guide-investissement-afrique': {
+      id: '/guide-investissement-afrique'
+      path: '/guide-investissement-afrique'
+      fullPath: '/guide-investissement-afrique'
+      preLoaderRoute: typeof GuideInvestissementAfriqueRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/favoris': {
@@ -413,12 +454,14 @@ const rootRouteChildren: RootRouteChildren = {
   DemandesRoute: DemandesRoute,
   EcosystemeRoute: EcosystemeRoute,
   FavorisRoute: FavorisRoute,
+  GuideInvestissementAfriqueRoute: GuideInvestissementAfriqueRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
   PremiumRoute: PremiumRoute,
   ProcessusRoute: ProcessusRoute,
   ProjetsRoute: ProjetsRouteWithChildren,
   SecteursRoute: SecteursRoute,
   SecuriteRoute: SecuriteRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TableauDeBordRoute: TableauDeBordRoute,
   DataRoomIdRoute: DataRoomIdRoute,
 }

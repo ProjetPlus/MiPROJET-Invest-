@@ -18,13 +18,52 @@ export const Route = createFileRoute("/projets/$id")({
     if (!project) throw notFound();
     return { project };
   },
-  head: ({ loaderData }) => ({
-    meta: [
-      { title: loaderData ? `${loaderData.project.code} — ${loaderData.project.sector} · MiPROJET Invest` : "Projet — MiPROJET Invest" },
-      { name: "description", content: loaderData?.project.summary ?? "" },
-      ...(loaderData ? [] : [{ name: "robots", content: "noindex" }]),
-    ],
-  }),
+  head: ({ loaderData, params }) => {
+    const p = loaderData?.project;
+    const url = `https://miprojetinvest.lovable.app/projets/${params.id}`;
+    const title = p ? `${p.title ?? `${p.code} — ${p.sector}`} · MiPROJET Invest` : "Projet — MiPROJET Invest";
+    const desc = p?.summary ?? "Projet certifié disponible sur MiPROJET Invest.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "product" },
+        ...(p?.image_url ? [
+          { property: "og:image", content: p.image_url },
+          { name: "twitter:image", content: p.image_url },
+        ] : []),
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+        ...(p ? [] : [{ name: "robots", content: "noindex" }]),
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: p ? [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: p.title ?? `${p.code} — ${p.sector}`,
+            description: p.summary,
+            category: p.sector,
+            image: p.image_url,
+            url,
+            brand: { "@type": "Organization", name: "MiPROJET" },
+            offers: {
+              "@type": "Offer",
+              priceCurrency: "EUR",
+              price: p.amount_sought_eur,
+              availability: "https://schema.org/InStock",
+              url,
+            },
+          }),
+        },
+      ] : undefined,
+    };
+  },
   notFoundComponent: NotFound,
   component: ProjectDetail,
 });

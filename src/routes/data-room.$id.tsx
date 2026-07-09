@@ -11,11 +11,13 @@ export const Route = createFileRoute("/data-room/$id")({
     if (!project) throw notFound();
     return { project };
   },
-  head: ({ loaderData }) => ({
+  head: ({ loaderData, params }) => ({
     meta: [
       { title: loaderData ? `Espace documentaire ${loaderData.project.code} — MiPROJET Invest` : "Espace documentaire" },
+      { name: "description", content: loaderData ? `Espace documentaire sécurisé du projet ${loaderData.project.code} (${loaderData.project.sector}). Documents à déblocage progressif après vérification et souscription Premium.` : "Espace documentaire sécurisé MiPROJET Invest." },
       { name: "robots", content: "noindex" },
     ],
+    links: [{ rel: "canonical", href: `https://miprojetinvest.lovable.app/data-room/${params.id}` }],
   }),
   component: DataRoomPage,
 });
