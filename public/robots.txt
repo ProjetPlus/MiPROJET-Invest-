@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /tableau-de-bord
+Disallow: /demandes
+Disallow: /favoris
+Disallow: /data-room/
+
+Sitemap: https://miprojetinvest.lovable.app/sitemap.xml

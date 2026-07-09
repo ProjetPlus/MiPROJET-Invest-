@@ -1,0 +1,23 @@
+# MiPROJET Invest
+
+> Plateforme panafricaine de mise en relation entre investisseurs et projets africains certifiés, issus des canaux MiPROJET Go et MiPROJET+.
+
+MiPROJET Invest est la vitrine d'accès investisseur de l'écosystème MiPROJET. Les projets présentés proviennent exclusivement de MiPROJET Go (terrain, TPE) et MiPROJET+ (PME structurées) après validation par le comité. La plateforme ne crée pas de projets — elle sélectionne, présente et facilite la mise en relation.
+
+## Pages
+
+- [Accueil](/): Vue d'ensemble de l'écosystème et projets à la une.
+- [Opportunités](/projets): Catalogue de projets prêts à être financés (MiPROJET Go et MiPROJET+).
+- [Secteurs](/secteurs): Répartition sectorielle des opportunités disponibles.
+- [Écosystème](/ecosysteme): Fonctionnement des canaux Go, + et Invest.
+- [Processus](/processus): Étapes de sélection, vérification et mise en relation.
+- [Guide investissement Afrique](/guide-investissement-afrique): Comment investir en Afrique — guide complet des véhicules, risques et opportunités.
+- [Premium](/premium): Avantages du statut Premium Investisseur.
+- [À propos](/a-propos): Mission et gouvernance MiPROJET Invest.
+- [Sécurité](/securite): Politique de sécurité et de confidentialité.
+- [Contact](/contact): Contacter l'équipe MiPROJET.
+
+## Optional
+
+- [CGU](/cgu): Conditions générales d'utilisation.
+- [Mentions légales](/mentions-legales): Informations légales.
