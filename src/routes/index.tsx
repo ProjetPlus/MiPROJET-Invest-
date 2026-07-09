@@ -6,13 +6,37 @@ import { Button } from "@/components/ui/button";
 import { ProjectCard } from "@/components/project/project-card";
 import { PROJECTS, STATS, SECTORS, formatEUR } from "@/lib/mock-data";
 
+const HOME_URL = "https://miprojetinvest.lovable.app/";
+const HOME_TITLE = "MiPROJET Invest — Investir dans l'Afrique qui se construit";
+const HOME_DESC = "Découvrez des projets africains certifiés issus de MiPROJET Go et MiPROJET+. Investissez dans l'agriculture, l'énergie, la fintech et plus, avec mise en relation qualifiée.";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MiPROJET Invest — Investir dans l'Afrique qui se construit" },
-      { name: "description", content: "L'écosystème panafricain qui connecte investisseurs et projets certifiés. Opportunités sélectionnées, rendement structuré, portée continentale." },
-      { property: "og:title", content: "MiPROJET Invest — Investir dans l'Afrique qui se construit" },
-      { property: "og:description", content: "L'écosystème panafricain qui connecte investisseurs et projets certifiés." },
+      { title: HOME_TITLE },
+      { name: "description", content: HOME_DESC },
+      { property: "og:title", content: HOME_TITLE },
+      { property: "og:description", content: HOME_DESC },
+      { property: "og:url", content: HOME_URL },
+      { name: "twitter:title", content: HOME_TITLE },
+      { name: "twitter:description", content: HOME_DESC },
+    ],
+    links: [{ rel: "canonical", href: HOME_URL }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Projets à la une — MiPROJET Invest",
+          itemListElement: PROJECTS.filter((p) => p.featured).slice(0, 6).map((p, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `https://miprojetinvest.lovable.app/projets/${p.id}`,
+            name: p.title ?? `${p.code} — ${p.sector}`,
+          })),
+        }),
+      },
     ],
   }),
   component: LandingPage,
