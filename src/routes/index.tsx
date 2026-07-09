@@ -58,8 +58,8 @@ function LandingPage() {
                 {t("hero.badge")}
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.05]">
-                {t("hero.title1")}{" "}
-                <span className="text-gradient-brand">{t("hero.title2")}</span>
+                Investir dans l'Afrique{" "}
+                <span className="text-gradient-brand">qui se construit</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
                 {t("hero.subtitle")}
