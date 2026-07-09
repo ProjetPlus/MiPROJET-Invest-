@@ -9,11 +9,40 @@ import { ProjectCard } from "@/components/project/project-card";
 import { PROJECTS, SECTORS, COUNTRIES, formatEUR, type ProjectChannel } from "@/lib/mock-data";
 import { Link } from "@tanstack/react-router";
 
+const CATALOG_URL = "https://miprojetinvest.lovable.app/projets";
+const CATALOG_TITLE = "Opportunités d'investissement en Afrique — MiPROJET Invest";
+const CATALOG_DESC = "Catalogue de projets africains prêts à être financés, issus de MiPROJET Go et MiPROJET+. Filtrez par secteur, pays et montant pour trouver l'opportunité qui vous correspond.";
+
 export const Route = createFileRoute("/projets/")({
-  head: () => ({ meta: [
-    { title: "Opportunités d'investissement — MiPROJET Invest" },
-    { name: "description", content: "Découvrez les projets sélectionnés issus de MiPROJET Go et MiPROJET+, prêts à être financés. Filtrez par secteur, pays et montant." },
-  ] }),
+  head: () => ({
+    meta: [
+      { title: CATALOG_TITLE },
+      { name: "description", content: CATALOG_DESC },
+      { property: "og:title", content: CATALOG_TITLE },
+      { property: "og:description", content: CATALOG_DESC },
+      { property: "og:url", content: CATALOG_URL },
+      { name: "twitter:title", content: CATALOG_TITLE },
+      { name: "twitter:description", content: CATALOG_DESC },
+    ],
+    links: [{ rel: "canonical", href: CATALOG_URL }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Opportunités d'investissement — MiPROJET Invest",
+          numberOfItems: PROJECTS.length,
+          itemListElement: PROJECTS.slice(0, 24).map((p, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `https://miprojetinvest.lovable.app/projets/${p.id}`,
+            name: p.title ?? `${p.code} — ${p.sector}`,
+          })),
+        }),
+      },
+    ],
+  }),
   component: ProjectsCatalog,
 });
 
