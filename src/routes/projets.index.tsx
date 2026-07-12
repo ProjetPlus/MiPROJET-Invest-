@@ -159,7 +159,7 @@ function ProjectsCatalog() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute top-4 left-4 flex items-center gap-2">
                     <span className="inline-flex items-center gap-1 rounded-md bg-brand-gold text-brand-gold-foreground px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide">À la une</span>
-                    <span className="inline-flex items-center gap-1 rounded-md bg-brand-blue text-brand-blue-foreground px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide"><Building2 className="h-3 w-3" /> MiPROJET+</span>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-brand-orange text-brand-orange-foreground px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide"><Building2 className="h-3 w-3" /> MiPROJET+</span>
                   </div>
                 </div>
                 <div className="p-6 md:p-8 flex flex-col gap-4">
