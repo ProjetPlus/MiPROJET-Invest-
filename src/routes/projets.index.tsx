@@ -49,7 +49,7 @@ export const Route = createFileRoute("/projets/")({
 const CHANNELS: { key: "ALL" | ProjectChannel; label: string; icon: React.ReactNode; tone: string }[] = [
   { key: "ALL", label: "Tout", icon: null, tone: "" },
   { key: "GO", label: "MiPROJET Go", icon: <Sprout className="h-4 w-4" />, tone: "text-brand-green border-brand-green data-[on=true]:bg-brand-green data-[on=true]:text-brand-green-foreground" },
-  { key: "PLUS", label: "MiPROJET+", icon: <Building2 className="h-4 w-4" />, tone: "text-brand-blue border-brand-blue data-[on=true]:bg-brand-blue data-[on=true]:text-brand-blue-foreground" },
+  { key: "PLUS", label: "MiPROJET+", icon: <Building2 className="h-4 w-4" />, tone: "text-brand-orange border-brand-orange data-[on=true]:bg-brand-orange data-[on=true]:text-brand-orange-foreground" },
 ];
 
 function ProjectsCatalog() {
