@@ -25,7 +25,10 @@ function EcoPage() {
           {CARDS.map((c, i) => (
             <div key={c.t} className="relative rounded-3xl border border-border bg-card p-6">
               <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold ${
-                c.tone === "green" ? "bg-brand-green text-brand-green-foreground" : c.tone === "gold" ? "bg-brand-gold text-brand-gold-foreground" : "bg-brand-blue text-brand-blue-foreground"
+                c.tone === "green" ? "bg-brand-green text-brand-green-foreground"
+                : c.tone === "gold" ? "bg-brand-gold text-brand-gold-foreground"
+                : c.tone === "orange" ? "bg-brand-orange text-brand-orange-foreground"
+                : "bg-brand-blue text-brand-blue-foreground"
               }`}>{c.icon} Étape {i + 1} — {c.role}</div>
               <h2 className="mt-4 text-xl font-bold">{c.t}</h2>
               <p className="mt-2 text-sm text-muted-foreground">{c.d}</p>
