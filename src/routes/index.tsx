@@ -89,7 +89,7 @@ function LandingPage() {
                 <img
                   src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1000&auto=format&fit=crop&q=70"
                   alt="Entrepreneurs africains"
-                  className="w-full h-[420px] object-cover"
+                  className="w-full h-64 sm:h-80 lg:h-[420px] object-cover"
                 />
                 <div className="p-5 border-t border-border grid grid-cols-2 gap-3">
                   <QuickTile icon={<Sprout className="h-4 w-4" />} tone="green" label="Go" />
