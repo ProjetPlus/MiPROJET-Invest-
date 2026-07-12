@@ -191,8 +191,11 @@ function MiniKPI({ value, label }: { value: string; label: string }) {
   );
 }
 
-function QuickTile({ icon, label, tone }: { icon: React.ReactNode; label: string; tone: "blue" | "green" | "gold" }) {
-  const bg = tone === "green" ? "bg-brand-green text-brand-green-foreground" : tone === "gold" ? "bg-brand-gold text-brand-gold-foreground" : "bg-brand-blue text-brand-blue-foreground";
+function QuickTile({ icon, label, tone }: { icon: React.ReactNode; label: string; tone: "blue" | "green" | "gold" | "orange" }) {
+  const bg = tone === "green" ? "bg-brand-green text-brand-green-foreground"
+    : tone === "gold" ? "bg-brand-gold text-brand-gold-foreground"
+    : tone === "orange" ? "bg-brand-orange text-brand-orange-foreground"
+    : "bg-brand-blue text-brand-blue-foreground";
   return (
     <div className={`rounded-xl ${bg} p-3 flex items-center gap-2 text-xs font-bold`}>
       {icon} MiPROJET {label}
