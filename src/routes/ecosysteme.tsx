@@ -8,8 +8,8 @@ export const Route = createFileRoute("/ecosysteme")({
 });
 
 const CARDS = [
-  { icon: <Sprout className="h-5 w-5" />, tone: "blue", t: "MiPROJET Go", d: "Activités informelles, microbusiness, économie de terrain. Le projet naît et prend forme.", role: "Terrain" },
-  { icon: <Building2 className="h-5 w-5" />, tone: "green", t: "MiPROJET+", d: "Structuration, organisation, certification. Le projet devient une entreprise finançable.", role: "Structuration" },
+  { icon: <Sprout className="h-5 w-5" />, tone: "green", t: "MiPROJET Go", d: "Activités informelles, microbusiness, économie de terrain. Le projet naît et prend forme.", role: "Terrain" },
+  { icon: <Building2 className="h-5 w-5" />, tone: "orange", t: "MiPROJET+", d: "Structuration, organisation, certification. Le projet devient une entreprise finançable.", role: "Structuration" },
   { icon: <Rocket className="h-5 w-5" />, tone: "gold", t: "MiPROJET Invest", d: "Diffusion vers les investisseurs et mise en relation contrôlée. Le capital arrive.", role: "Investissement" },
 ];
 
