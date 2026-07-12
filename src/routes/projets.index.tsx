@@ -41,6 +41,17 @@ export const Route = createFileRoute("/projets/")({
           })),
         }),
       },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Accueil", item: "https://miprojetinvest.lovable.app/" },
+            { "@type": "ListItem", position: 2, name: "Projets", item: CATALOG_URL },
+          ],
+        }),
+      },
     ],
   }),
   component: ProjectsCatalog,
