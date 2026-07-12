@@ -57,11 +57,11 @@ function LandingPage() {
                 <Compass className="h-3.5 w-3.5" />
                 {t("hero.badge")}
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.05]">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] break-words">
                 Investir dans l'Afrique{" "}
                 <span className="text-gradient-brand">qui se construit</span>
               </h1>
-              <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
+              <p className="text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
                 {t("hero.subtitle")}
               </p>
               <div className="flex flex-wrap gap-3">
