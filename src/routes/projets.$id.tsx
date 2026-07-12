@@ -61,6 +61,18 @@ export const Route = createFileRoute("/projets/$id")({
             },
           }),
         },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Accueil", item: "https://miprojetinvest.lovable.app/" },
+              { "@type": "ListItem", position: 2, name: "Projets", item: "https://miprojetinvest.lovable.app/projets" },
+              { "@type": "ListItem", position: 3, name: p.title ?? `${p.code} — ${p.sector}`, item: url },
+            ],
+          }),
+        },
       ] : undefined,
     };
   },
