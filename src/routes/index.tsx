@@ -57,11 +57,11 @@ function LandingPage() {
                 <Compass className="h-3.5 w-3.5" />
                 {t("hero.badge")}
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.05]">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] break-words">
                 Investir dans l'Afrique{" "}
                 <span className="text-gradient-brand">qui se construit</span>
               </h1>
-              <p className="text-lg text-muted-foreground max-w-xl leading-relaxed">
+              <p className="text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
                 {t("hero.subtitle")}
               </p>
               <div className="flex flex-wrap gap-3">
@@ -89,11 +89,11 @@ function LandingPage() {
                 <img
                   src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1000&auto=format&fit=crop&q=70"
                   alt="Entrepreneurs africains"
-                  className="w-full h-[420px] object-cover"
+                  className="w-full h-64 sm:h-80 lg:h-[420px] object-cover"
                 />
                 <div className="p-5 border-t border-border grid grid-cols-2 gap-3">
                   <QuickTile icon={<Sprout className="h-4 w-4" />} tone="green" label="Go" />
-                  <QuickTile icon={<Building2 className="h-4 w-4" />} tone="blue" label="+" />
+                  <QuickTile icon={<Building2 className="h-4 w-4" />} tone="orange" label="+" />
                 </div>
               </div>
             </div>
@@ -191,8 +191,11 @@ function MiniKPI({ value, label }: { value: string; label: string }) {
   );
 }
 
-function QuickTile({ icon, label, tone }: { icon: React.ReactNode; label: string; tone: "blue" | "green" | "gold" }) {
-  const bg = tone === "green" ? "bg-brand-green text-brand-green-foreground" : tone === "gold" ? "bg-brand-gold text-brand-gold-foreground" : "bg-brand-blue text-brand-blue-foreground";
+function QuickTile({ icon, label, tone }: { icon: React.ReactNode; label: string; tone: "blue" | "green" | "gold" | "orange" }) {
+  const bg = tone === "green" ? "bg-brand-green text-brand-green-foreground"
+    : tone === "gold" ? "bg-brand-gold text-brand-gold-foreground"
+    : tone === "orange" ? "bg-brand-orange text-brand-orange-foreground"
+    : "bg-brand-blue text-brand-blue-foreground";
   return (
     <div className={`rounded-xl ${bg} p-3 flex items-center gap-2 text-xs font-bold`}>
       {icon} MiPROJET {label}

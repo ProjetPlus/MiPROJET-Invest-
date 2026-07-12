@@ -8,8 +8,8 @@ export const Route = createFileRoute("/ecosysteme")({
 });
 
 const CARDS = [
-  { icon: <Sprout className="h-5 w-5" />, tone: "blue", t: "MiPROJET Go", d: "Activités informelles, microbusiness, économie de terrain. Le projet naît et prend forme.", role: "Terrain" },
-  { icon: <Building2 className="h-5 w-5" />, tone: "green", t: "MiPROJET+", d: "Structuration, organisation, certification. Le projet devient une entreprise finançable.", role: "Structuration" },
+  { icon: <Sprout className="h-5 w-5" />, tone: "green", t: "MiPROJET Go", d: "Activités informelles, microbusiness, économie de terrain. Le projet naît et prend forme.", role: "Terrain" },
+  { icon: <Building2 className="h-5 w-5" />, tone: "orange", t: "MiPROJET+", d: "Structuration, organisation, certification. Le projet devient une entreprise finançable.", role: "Structuration" },
   { icon: <Rocket className="h-5 w-5" />, tone: "gold", t: "MiPROJET Invest", d: "Diffusion vers les investisseurs et mise en relation contrôlée. Le capital arrive.", role: "Investissement" },
 ];
 
@@ -25,7 +25,10 @@ function EcoPage() {
           {CARDS.map((c, i) => (
             <div key={c.t} className="relative rounded-3xl border border-border bg-card p-6">
               <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold ${
-                c.tone === "green" ? "bg-brand-green text-brand-green-foreground" : c.tone === "gold" ? "bg-brand-gold text-brand-gold-foreground" : "bg-brand-blue text-brand-blue-foreground"
+                c.tone === "green" ? "bg-brand-green text-brand-green-foreground"
+                : c.tone === "gold" ? "bg-brand-gold text-brand-gold-foreground"
+                : c.tone === "orange" ? "bg-brand-orange text-brand-orange-foreground"
+                : "bg-brand-blue text-brand-blue-foreground"
               }`}>{c.icon} Étape {i + 1} — {c.role}</div>
               <h2 className="mt-4 text-xl font-bold">{c.t}</h2>
               <p className="mt-2 text-sm text-muted-foreground">{c.d}</p>

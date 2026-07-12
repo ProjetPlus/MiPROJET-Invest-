@@ -41,6 +41,17 @@ export const Route = createFileRoute("/projets/")({
           })),
         }),
       },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Accueil", item: "https://miprojetinvest.lovable.app/" },
+            { "@type": "ListItem", position: 2, name: "Projets", item: CATALOG_URL },
+          ],
+        }),
+      },
     ],
   }),
   component: ProjectsCatalog,
@@ -49,7 +60,7 @@ export const Route = createFileRoute("/projets/")({
 const CHANNELS: { key: "ALL" | ProjectChannel; label: string; icon: React.ReactNode; tone: string }[] = [
   { key: "ALL", label: "Tout", icon: null, tone: "" },
   { key: "GO", label: "MiPROJET Go", icon: <Sprout className="h-4 w-4" />, tone: "text-brand-green border-brand-green data-[on=true]:bg-brand-green data-[on=true]:text-brand-green-foreground" },
-  { key: "PLUS", label: "MiPROJET+", icon: <Building2 className="h-4 w-4" />, tone: "text-brand-blue border-brand-blue data-[on=true]:bg-brand-blue data-[on=true]:text-brand-blue-foreground" },
+  { key: "PLUS", label: "MiPROJET+", icon: <Building2 className="h-4 w-4" />, tone: "text-brand-orange border-brand-orange data-[on=true]:bg-brand-orange data-[on=true]:text-brand-orange-foreground" },
 ];
 
 function ProjectsCatalog() {
@@ -159,7 +170,7 @@ function ProjectsCatalog() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute top-4 left-4 flex items-center gap-2">
                     <span className="inline-flex items-center gap-1 rounded-md bg-brand-gold text-brand-gold-foreground px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide">À la une</span>
-                    <span className="inline-flex items-center gap-1 rounded-md bg-brand-blue text-brand-blue-foreground px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide"><Building2 className="h-3 w-3" /> MiPROJET+</span>
+                    <span className="inline-flex items-center gap-1 rounded-md bg-brand-orange text-brand-orange-foreground px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide"><Building2 className="h-3 w-3" /> MiPROJET+</span>
                   </div>
                 </div>
                 <div className="p-6 md:p-8 flex flex-col gap-4">

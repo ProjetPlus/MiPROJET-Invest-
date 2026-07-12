@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 const CHANNEL_STYLE: Record<string, { bg: string; label: string }> = {
   GO: { bg: "bg-brand-green text-brand-green-foreground", label: "Go" },
-  PLUS: { bg: "bg-brand-blue text-brand-blue-foreground", label: "+" },
+  PLUS: { bg: "bg-brand-orange text-brand-orange-foreground", label: "+" },
 };
 
 export function ProjectCard({ project }: { project: Project }) {
