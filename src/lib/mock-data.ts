@@ -68,7 +68,7 @@ function seeded(i: number, mod: number) {
   return Math.floor(((i * 9301 + 49297) % 233280) / 233280 * mod);
 }
 
-import agriCover from "@/assets/agricapital-cover.jpg.asset.json";
+import agriCover from "@/assets/agricapital-cover.jpg";
 
 const AGRICAPITAL: Project = {
   id: "b7024000-fc34-4706-8901-2ce092283dbc",
@@ -94,7 +94,7 @@ const AGRICAPITAL: Project = {
   monthly_growth_percent: 9,
   documents_count: 12,
   cover_hue: 120,
-  image_url: agriCover.url,
+  image_url: agriCover,
 };
 
 const GENERATED: Project[] = Array.from({ length: 23 }, (_, i) => {
