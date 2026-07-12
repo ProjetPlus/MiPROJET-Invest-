@@ -93,7 +93,7 @@ function LandingPage() {
                 />
                 <div className="p-5 border-t border-border grid grid-cols-2 gap-3">
                   <QuickTile icon={<Sprout className="h-4 w-4" />} tone="green" label="Go" />
-                  <QuickTile icon={<Building2 className="h-4 w-4" />} tone="blue" label="+" />
+                  <QuickTile icon={<Building2 className="h-4 w-4" />} tone="orange" label="+" />
                 </div>
               </div>
             </div>
