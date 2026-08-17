@@ -65,6 +65,123 @@ export type Database = {
           },
         ]
       }
+      activity_settings: {
+        Row: {
+          activity_name: string
+          activity_type: string
+          address: string | null
+          city: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          email: string | null
+          facebook: string | null
+          id: string
+          instagram: string | null
+          latitude: number | null
+          longitude: number | null
+          opening_hours: string | null
+          owner_name: string | null
+          phone: string | null
+          photos: string[]
+          slogan: string | null
+          tiktok: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          activity_name: string
+          activity_type?: string
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          email?: string | null
+          facebook?: string | null
+          id?: string
+          instagram?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          opening_hours?: string | null
+          owner_name?: string | null
+          phone?: string | null
+          photos?: string[]
+          slogan?: string | null
+          tiktok?: string | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          activity_name?: string
+          activity_type?: string
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          email?: string | null
+          facebook?: string | null
+          id?: string
+          instagram?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          opening_hours?: string | null
+          owner_name?: string | null
+          phone?: string | null
+          photos?: string[]
+          slogan?: string | null
+          tiktok?: string | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_user_id: string | null
+          created_at: string
+          details: Json
+          entity_id: string | null
+          entity_label: string | null
+          entity_table: string | null
+          id: string
+          module: string
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          entity_label?: string | null
+          entity_table?: string | null
+          id?: string
+          module: string
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_user_id?: string | null
+          created_at?: string
+          details?: Json
+          entity_id?: string | null
+          entity_label?: string | null
+          entity_table?: string | null
+          id?: string
+          module?: string
+        }
+        Relationships: []
+      }
       connection_requests: {
         Row: {
           admin_notes: string | null
@@ -743,6 +860,39 @@ export type Database = {
         }
         Relationships: []
       }
+      export_audit_logs: {
+        Row: {
+          admin_phone: string | null
+          admin_user_id: string
+          created_at: string
+          id: string
+          periode_start: string | null
+          query_text: string | null
+          rows_count: number
+          type_filter: string | null
+        }
+        Insert: {
+          admin_phone?: string | null
+          admin_user_id: string
+          created_at?: string
+          id?: string
+          periode_start?: string | null
+          query_text?: string | null
+          rows_count?: number
+          type_filter?: string | null
+        }
+        Update: {
+          admin_phone?: string | null
+          admin_user_id?: string
+          created_at?: string
+          id?: string
+          periode_start?: string | null
+          query_text?: string | null
+          rows_count?: number
+          type_filter?: string | null
+        }
+        Relationships: []
+      }
       faqs: {
         Row: {
           answer: string
@@ -804,6 +954,33 @@ export type Database = {
           form_type?: string
           id?: string
           is_completed?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      import_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          operations_extraites: Json
+          statut: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          operations_extraites?: Json
+          statut?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          operations_extraites?: Json
+          statut?: string
           updated_at?: string
           user_id?: string
         }
@@ -1163,6 +1340,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "mp_certifications_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_certifications_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
+          },
+          {
             foreignKeyName: "mp_certifications_scoring_id_fkey"
             columns: ["scoring_id"]
             isOneToOne: false
@@ -1358,6 +1549,20 @@ export type Database = {
             referencedRelation: "mp_projects"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "mp_evaluations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_evaluations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
+          },
         ]
       }
       mp_financial_records: {
@@ -1368,10 +1573,12 @@ export type Database = {
           currency: string | null
           description: string | null
           id: string
+          party_name: string | null
           project_id: string
           receipt_path: string | null
           record_date: string
           record_type: string
+          stakeholder_id: string | null
           updated_at: string
           user_id: string
         }
@@ -1382,10 +1589,12 @@ export type Database = {
           currency?: string | null
           description?: string | null
           id?: string
+          party_name?: string | null
           project_id: string
           receipt_path?: string | null
           record_date?: string
           record_type?: string
+          stakeholder_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -1396,10 +1605,12 @@ export type Database = {
           currency?: string | null
           description?: string | null
           id?: string
+          party_name?: string | null
           project_id?: string
           receipt_path?: string | null
           record_date?: string
           record_type?: string
+          stakeholder_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -1409,6 +1620,27 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mp_financial_records_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_financial_records_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_financial_records_stakeholder_id_fkey"
+            columns: ["stakeholder_id"]
+            isOneToOne: false
+            referencedRelation: "mp_project_stakeholders"
             referencedColumns: ["id"]
           },
         ]
@@ -1464,6 +1696,20 @@ export type Database = {
             referencedRelation: "mp_projects"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "mp_funder_connections_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_funder_connections_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
+          },
         ]
       }
       mp_introductions: {
@@ -1516,6 +1762,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "mp_projects"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mp_introductions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_introductions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
           },
         ]
       }
@@ -1668,6 +1928,163 @@ export type Database = {
             referencedRelation: "mp_projects"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "mp_project_media_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_project_media_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
+          },
+        ]
+      }
+      mp_project_milestones: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_date: string
+          id: string
+          is_public: boolean
+          kind: string
+          location: string | null
+          media_url: string | null
+          participants_count: number | null
+          project_id: string
+          sort_order: number
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          id?: string
+          is_public?: boolean
+          kind?: string
+          location?: string | null
+          media_url?: string | null
+          participants_count?: number | null
+          project_id: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          id?: string
+          is_public?: boolean
+          kind?: string
+          location?: string | null
+          media_url?: string | null
+          participants_count?: number | null
+          project_id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_project_milestones_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mp_project_milestones_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_project_milestones_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
+          },
+        ]
+      }
+      mp_project_stakeholders: {
+        Row: {
+          capital_share: number | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          organization: string | null
+          phone: string | null
+          project_id: string
+          role: string | null
+          stakeholder_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          capital_share?: number | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          organization?: string | null
+          phone?: string | null
+          project_id: string
+          role?: string | null
+          stakeholder_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          capital_share?: number | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          organization?: string | null
+          phone?: string | null
+          project_id?: string
+          role?: string | null
+          stakeholder_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mp_project_stakeholders_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "mp_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mp_project_stakeholders_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_project_stakeholders_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
+          },
         ]
       }
       mp_project_team: {
@@ -1730,11 +2147,26 @@ export type Database = {
             referencedRelation: "mp_projects"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "mp_project_team_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_project_team_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
+          },
         ]
       }
       mp_projects: {
         Row: {
           activity_type: string | null
+          advisors_count: number
           annual_revenue: number | null
           budget_initial: number | null
           city: string | null
@@ -1748,6 +2180,7 @@ export type Database = {
           display_id: string | null
           employees_count: number | null
           governance: Json | null
+          governance_mode: string | null
           has_accounting: boolean | null
           has_bank_account: boolean | null
           has_business_plan: boolean | null
@@ -1760,6 +2193,8 @@ export type Database = {
           monitoring_evaluation: string | null
           monthly_expenses: number | null
           objectif: string | null
+          offices_count: number
+          operational_units: number | null
           product_description: string | null
           profile_kind: string
           project_type: string | null
@@ -1774,6 +2209,7 @@ export type Database = {
         }
         Insert: {
           activity_type?: string | null
+          advisors_count?: number
           annual_revenue?: number | null
           budget_initial?: number | null
           city?: string | null
@@ -1787,6 +2223,7 @@ export type Database = {
           display_id?: string | null
           employees_count?: number | null
           governance?: Json | null
+          governance_mode?: string | null
           has_accounting?: boolean | null
           has_bank_account?: boolean | null
           has_business_plan?: boolean | null
@@ -1799,6 +2236,8 @@ export type Database = {
           monitoring_evaluation?: string | null
           monthly_expenses?: number | null
           objectif?: string | null
+          offices_count?: number
+          operational_units?: number | null
           product_description?: string | null
           profile_kind?: string
           project_type?: string | null
@@ -1813,6 +2252,7 @@ export type Database = {
         }
         Update: {
           activity_type?: string | null
+          advisors_count?: number
           annual_revenue?: number | null
           budget_initial?: number | null
           city?: string | null
@@ -1826,6 +2266,7 @@ export type Database = {
           display_id?: string | null
           employees_count?: number | null
           governance?: Json | null
+          governance_mode?: string | null
           has_accounting?: boolean | null
           has_bank_account?: boolean | null
           has_business_plan?: boolean | null
@@ -1838,6 +2279,8 @@ export type Database = {
           monitoring_evaluation?: string | null
           monthly_expenses?: number | null
           objectif?: string | null
+          offices_count?: number
+          operational_units?: number | null
           product_description?: string | null
           profile_kind?: string
           project_type?: string | null
@@ -1909,63 +2352,89 @@ export type Database = {
             referencedRelation: "mp_projects"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "mp_recommendations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_recommendations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
+          },
         ]
       }
       mp_scoring_results: {
         Row: {
           answers: Json | null
+          computed_at: string
           created_at: string
           faiblesses: string[] | null
           forces: string[] | null
           id: string
           is_active: boolean | null
+          maturite: string | null
           niveau: string | null
           project_id: string
           recommandations: string[] | null
+          score_equipe: number
           score_financier: number | null
           score_global: number | null
           score_impact: number | null
           score_juridique: number | null
           score_marche: number | null
           score_technique: number | null
+          source: string
           updated_at: string
           user_id: string
         }
         Insert: {
           answers?: Json | null
+          computed_at?: string
           created_at?: string
           faiblesses?: string[] | null
           forces?: string[] | null
           id?: string
           is_active?: boolean | null
+          maturite?: string | null
           niveau?: string | null
           project_id: string
           recommandations?: string[] | null
+          score_equipe?: number
           score_financier?: number | null
           score_global?: number | null
           score_impact?: number | null
           score_juridique?: number | null
           score_marche?: number | null
           score_technique?: number | null
+          source?: string
           updated_at?: string
           user_id: string
         }
         Update: {
           answers?: Json | null
+          computed_at?: string
           created_at?: string
           faiblesses?: string[] | null
           forces?: string[] | null
           id?: string
           is_active?: boolean | null
+          maturite?: string | null
           niveau?: string | null
           project_id?: string
           recommandations?: string[] | null
+          score_equipe?: number
           score_financier?: number | null
           score_global?: number | null
           score_impact?: number | null
           score_juridique?: number | null
           score_marche?: number | null
           score_technique?: number | null
+          source?: string
           updated_at?: string
           user_id?: string
         }
@@ -1976,6 +2445,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "mp_projects"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mp_scoring_results_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_scoring_results_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
           },
         ]
       }
@@ -2192,6 +2675,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "mp_user_service_requests_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_ecosystem_scoring"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "mp_user_service_requests_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "v_mp_scoring_coherence"
+            referencedColumns: ["project_id"]
+          },
+          {
             foreignKeyName: "mp_user_service_requests_service_id_fkey"
             columns: ["service_id"]
             isOneToOne: false
@@ -2370,6 +2867,65 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      operations: {
+        Row: {
+          categorie: string
+          created_at: string
+          date_operation: string
+          description: string
+          id: string
+          mode_paiement: string
+          montant: number
+          note: string | null
+          produit_id: string | null
+          quantite: number | null
+          source: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          categorie?: string
+          created_at?: string
+          date_operation?: string
+          description?: string
+          id?: string
+          mode_paiement?: string
+          montant?: number
+          note?: string | null
+          produit_id?: string | null
+          quantite?: number | null
+          source?: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          categorie?: string
+          created_at?: string
+          date_operation?: string
+          description?: string
+          id?: string
+          mode_paiement?: string
+          montant?: number
+          note?: string | null
+          produit_id?: string | null
+          quantite?: number | null
+          source?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "operations_produit_id_fkey"
+            columns: ["produit_id"]
+            isOneToOne: false
+            referencedRelation: "produits"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       opportunities: {
         Row: {
@@ -2670,6 +3226,66 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_sync_conflicts: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          entity_label: string | null
+          entity_table: string
+          id: string
+          resolution_strategy: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          resolved_payload: Json | null
+          source_payload: Json
+          source_platform: string | null
+          source_updated_at: string | null
+          status: string
+          target_payload: Json
+          target_platform: string | null
+          target_updated_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          entity_label?: string | null
+          entity_table: string
+          id?: string
+          resolution_strategy?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          resolved_payload?: Json | null
+          source_payload?: Json
+          source_platform?: string | null
+          source_updated_at?: string | null
+          status?: string
+          target_payload?: Json
+          target_platform?: string | null
+          target_updated_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          entity_label?: string | null
+          entity_table?: string
+          id?: string
+          resolution_strategy?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          resolved_payload?: Json | null
+          source_payload?: Json
+          source_platform?: string | null
+          source_updated_at?: string | null
+          status?: string
+          target_payload?: Json
+          target_platform?: string | null
+          target_updated_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       platform_sync_signals: {
         Row: {
           actor_user_id: string | null
@@ -2712,6 +3328,51 @@ export type Database = {
         }
         Relationships: []
       }
+      produits: {
+        Row: {
+          actif: boolean
+          categorie: string
+          created_at: string
+          id: string
+          nom: string
+          prix_unitaire: number
+          seuil_alerte: number
+          stock_actif: boolean
+          stock_actuel: number
+          unite: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actif?: boolean
+          categorie?: string
+          created_at?: string
+          id?: string
+          nom: string
+          prix_unitaire?: number
+          seuil_alerte?: number
+          stock_actif?: boolean
+          stock_actuel?: number
+          unite?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actif?: boolean
+          categorie?: string
+          created_at?: string
+          id?: string
+          nom?: string
+          prix_unitaire?: number
+          seuil_alerte?: number
+          stock_actif?: boolean
+          stock_actuel?: number
+          unite?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_status: string | null
@@ -2725,8 +3386,10 @@ export type Database = {
           created_at: string
           email: string | null
           employees_count: number | null
+          export_unlocked_until: string | null
           first_name: string | null
           founding_year: number | null
+          full_name: string | null
           id: string
           is_verified: boolean | null
           last_name: string | null
@@ -2745,6 +3408,7 @@ export type Database = {
           unsubscribe_token: string | null
           updated_at: string
           user_type: string
+          username: string | null
           website: string | null
           whatsapp: string | null
         }
@@ -2760,8 +3424,10 @@ export type Database = {
           created_at?: string
           email?: string | null
           employees_count?: number | null
+          export_unlocked_until?: string | null
           first_name?: string | null
           founding_year?: number | null
+          full_name?: string | null
           id: string
           is_verified?: boolean | null
           last_name?: string | null
@@ -2780,6 +3446,7 @@ export type Database = {
           unsubscribe_token?: string | null
           updated_at?: string
           user_type?: string
+          username?: string | null
           website?: string | null
           whatsapp?: string | null
         }
@@ -2795,8 +3462,10 @@ export type Database = {
           created_at?: string
           email?: string | null
           employees_count?: number | null
+          export_unlocked_until?: string | null
           first_name?: string | null
           founding_year?: number | null
+          full_name?: string | null
           id?: string
           is_verified?: boolean | null
           last_name?: string | null
@@ -2815,6 +3484,7 @@ export type Database = {
           unsubscribe_token?: string | null
           updated_at?: string
           user_type?: string
+          username?: string | null
           website?: string | null
           whatsapp?: string | null
         }
@@ -3048,6 +3718,7 @@ export type Database = {
           image_url: string | null
           is_public: boolean | null
           logo_url: string | null
+          metadata: Json
           mp_score: number | null
           owner_id: string
           public_summary: string | null
@@ -3086,6 +3757,7 @@ export type Database = {
           image_url?: string | null
           is_public?: boolean | null
           logo_url?: string | null
+          metadata?: Json
           mp_score?: number | null
           owner_id: string
           public_summary?: string | null
@@ -3124,6 +3796,7 @@ export type Database = {
           image_url?: string | null
           is_public?: boolean | null
           logo_url?: string | null
+          metadata?: Json
           mp_score?: number | null
           owner_id?: string
           public_summary?: string | null
@@ -3781,8 +4454,83 @@ export type Database = {
         }
         Relationships: []
       }
+      v_mp_ecosystem_scoring: {
+        Row: {
+          advisors_count: number | null
+          city: string | null
+          computed_at: string | null
+          country: string | null
+          display_id: string | null
+          governance_mode: string | null
+          journey: string | null
+          last_milestone_date: string | null
+          maturite: string | null
+          milestones_count: number | null
+          niveau: string | null
+          offices_count: number | null
+          operational_units: number | null
+          profile_kind: string | null
+          project_id: string | null
+          score_equipe: number | null
+          score_financier: number | null
+          score_global: number | null
+          score_impact: number | null
+          score_juridique: number | null
+          score_marche: number | null
+          score_technique: number | null
+          sector: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Relationships: []
+      }
+      v_mp_scoring_coherence: {
+        Row: {
+          computed_at: string | null
+          ecart_invest: boolean | null
+          ecart_maturite: boolean | null
+          etat: string | null
+          is_public: boolean | null
+          manque_publication: boolean | null
+          manque_score: boolean | null
+          maturite_calculee: string | null
+          maturite_projet: string | null
+          niveau_calcule: string | null
+          project_id: string | null
+          score_calcule: number | null
+          score_evaluation: number | null
+          score_invest: number | null
+          title: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      admin_list_access_requests: {
+        Args: never
+        Returns: {
+          admin_notes: string | null
+          created_at: string
+          id: string
+          message: string | null
+          project_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          user_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "access_requests"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      admin_update_access_request: {
+        Args: { _id: string; _notes: string; _status: string }
+        Returns: undefined
+      }
       archive_expired_tenders: { Args: never; Returns: undefined }
       build_email_html: {
         Args: {
@@ -3855,6 +4603,16 @@ export type Database = {
           external_link: string
         }[]
       }
+      get_project_team_contacts: {
+        Args: { _project_id: string }
+        Returns: {
+          contact_email: string
+          contact_phone: string
+          full_name: string
+          id: string
+        }[]
+      }
+      go_is_admin: { Args: { _user_id: string }; Returns: boolean }
       has_active_subscription: { Args: { _user_id: string }; Returns: boolean }
       has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
       increment_email_provider_usage: {
@@ -3865,6 +4623,7 @@ export type Database = {
       is_any_admin: { Args: { _user_id: string }; Returns: boolean }
       is_email_unsubscribed: { Args: { _email: string }; Returns: boolean }
       is_org_member: { Args: { _org_id: string }; Returns: boolean }
+      is_org_owner: { Args: { _org_id: string }; Returns: boolean }
       mark_email_failed: {
         Args: { _error: string; _id: string }
         Returns: undefined
@@ -3872,6 +4631,18 @@ export type Database = {
       mark_email_sent: {
         Args: { _id: string; _provider: string }
         Returns: undefined
+      }
+      mp_recompute_score: { Args: { _project_id: string }; Returns: undefined }
+      mp_resync_scoring: { Args: { _project_id?: string }; Returns: Json }
+      mp_rls_test_report: {
+        Args: never
+        Returns: {
+          details: string
+          expected: string
+          passed: boolean
+          suite: string
+          test_name: string
+        }[]
       }
       mp_valid_notification_link: { Args: { _link: string }; Returns: string }
       org_role_at_least: {
@@ -3883,7 +4654,8 @@ export type Database = {
         Args: { _r: Database["public"]["Enums"]["org_role"] }
         Returns: number
       }
-      unaccent: { Args: { "": string }; Returns: string }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
       unsubscribe_by_token: { Args: { _token: string }; Returns: Json }
       user_profile_type: { Args: { _user_id: string }; Returns: string }
       verify_certificate_public: {
