@@ -5,12 +5,14 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/brand/logo";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
-import { useMockUser, mockAuth } from "@/lib/auth-store";
+import { useAccess } from "@/lib/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const { t } = useTranslation();
-  const user = useMockUser();
+  const { session } = useAccess();
+  const user = session ? { name: session.user.email ?? "Investisseur" } : null;
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -58,7 +60,7 @@ export function SiteHeader() {
                   {user.name}
                 </Button>
               </Link>
-              <Button size="sm" variant="outline" onClick={() => mockAuth.signOut()}>Déconnexion</Button>
+              <Button size="sm" variant="outline" onClick={() => void supabase.auth.signOut()}>Déconnexion</Button>
             </>
           ) : (
             <>
@@ -102,7 +104,7 @@ export function SiteHeader() {
             <div className="px-2"><LanguageSwitcher /></div>
             {user ? (
               <button
-                onClick={() => { mockAuth.signOut(); setOpen(false); }}
+                onClick={() => { void supabase.auth.signOut(); setOpen(false); }}
                 className="px-3 py-2 text-sm rounded-md text-left hover:bg-muted"
               >
                 Déconnexion

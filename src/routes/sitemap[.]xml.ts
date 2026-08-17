@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { PROJECTS } from "@/lib/mock-data";
+import { listInvestProjects } from "@/lib/invest.functions";
 
 const BASE_URL = "https://miprojetinvest.lovable.app";
 
@@ -29,7 +29,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/mentions-legales", changefreq: "yearly", priority: "0.3" },
         ];
 
-        const projectEntries: SitemapEntry[] = PROJECTS.map((p) => ({
+        const projects = await listInvestProjects();
+        const projectEntries: SitemapEntry[] = projects.map((p) => ({
           path: `/projets/${p.id}`,
           changefreq: "weekly",
           priority: "0.8",
