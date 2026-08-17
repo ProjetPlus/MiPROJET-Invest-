@@ -20,8 +20,7 @@ const PREMIUM = [
 ];
 
 function PremiumPage() {
-  const { session } = useAccess();
-  const user = session;
+  const { isAdmin, isPremium } = useAccess();
   return (
     <SiteShell>
       <div className="container-page py-14">
@@ -57,9 +56,9 @@ function PremiumPage() {
             <Button
               
               className="w-full mt-8 bg-brand-gold text-brand-gold-foreground hover:bg-brand-gold/90"
-              disabled={user?.admin || user?.premium}
+              disabled={isAdmin || isPremium}
             >
-              {user?.admin ? "✓ Accès total (admin)" : user?.premium ? "✓ Premium actif" : "Passer Premium"}
+              {isAdmin ? "✓ Accès total (admin)" : isPremium ? "✓ Premium actif" : "Passer Premium"}
             </Button>
           </div>
         </div>
