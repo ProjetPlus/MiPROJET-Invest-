@@ -117,7 +117,7 @@ function ProjectDetail() {
         data: {
           projectId: project.id,
           amount: amount ? Number(amount) : null,
-          message: message || null,
+          message: message || undefined,
         },
       }),
     onSuccess: () => {
