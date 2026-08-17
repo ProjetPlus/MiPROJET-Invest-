@@ -4,14 +4,26 @@ import { useTranslation } from "react-i18next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
 import { ProjectCard } from "@/components/project/project-card";
-import { PROJECTS, STATS, SECTORS, formatEUR } from "@/lib/mock-data";
+import { listInvestProjects } from "@/lib/invest.functions";
+import { formatMoney } from "@/lib/invest-types";
+
+const formatEUR = (n: number) => formatMoney(n);
+const STATS = {
+  projects_active: 0,
+  projects_funded: 0,
+  investors_verified: 0,
+  countries: 0,
+  amount_raised_eur: 0,
+  average_ticket_eur: 0,
+};
 
 const HOME_URL = "https://miprojetinvest.lovable.app/";
 const HOME_TITLE = "MiPROJET Invest — Investir dans l'Afrique qui se construit";
 const HOME_DESC = "Découvrez des projets africains certifiés issus de MiPROJET Go et MiPROJET+. Investissez dans l'agriculture, l'énergie, la fintech et plus, avec mise en relation qualifiée.";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
+  loader: async () => ({ projects: await listInvestProjects() }),
+  head: ({ loaderData }) => ({
     meta: [
       { title: HOME_TITLE },
       { name: "description", content: HOME_DESC },
@@ -29,11 +41,11 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "ItemList",
           name: "Projets à la une — MiPROJET Invest",
-          itemListElement: PROJECTS.filter((p) => p.featured).slice(0, 6).map((p, i) => ({
+          itemListElement: (loaderData?.projects ?? []).slice(0, 6).map((p, i) => ({
             "@type": "ListItem",
             position: i + 1,
             url: `https://miprojetinvest.lovable.app/projets/${p.id}`,
-            name: p.title ?? `${p.code} — ${p.sector}`,
+            name: p.title,
           })),
         }),
       },
@@ -44,7 +56,9 @@ export const Route = createFileRoute("/")({
 
 function LandingPage() {
   const { t } = useTranslation();
-  const featured = PROJECTS.filter((p) => p.featured).slice(0, 6);
+  const { projects } = Route.useLoaderData();
+  const featured = projects.slice(0, 6);
+  const SECTORS = [...new Set(projects.map((p) => p.sector))];
 
   return (
     <SiteShell>

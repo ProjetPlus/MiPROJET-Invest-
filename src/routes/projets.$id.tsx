@@ -1,28 +1,32 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  ArrowLeft, ShieldCheck, Lock, MapPin, Users, TrendingUp, FileText,
-  Bookmark, Send, CheckCircle2, EyeOff, Building2, Sprout, AlertCircle,
+  ArrowLeft, ShieldCheck, Lock, MapPin, TrendingUp, FileText, Bookmark, Send,
+  CheckCircle2, EyeOff, Building2, Sprout, Crown, Loader2, Globe,
 } from "lucide-react";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
-import { PROJECTS, formatEUR } from "@/lib/mock-data";
-import { sectorImage } from "@/lib/sector-images";
-import { useMockUser, visibilityLevelFor, mockAuth, isAdmin } from "@/lib/auth-store";
-import { demandesStore } from "@/lib/demandes-store";
+import { Input } from "@/components/ui/input";
+import { getInvestProject, getProjectAnalytics, createConnectionRequest, listProjectDocuments } from "@/lib/invest.functions";
+import { formatMoney } from "@/lib/invest-types";
+import { resolveCover, resolveGallery } from "@/lib/project-media";
+import { useAccess, useConnectionRequests } from "@/lib/use-auth";
+import { favorites, useFavorites } from "@/lib/favorites";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/projets/$id")({
-  loader: ({ params }) => {
-    const project = PROJECTS.find((p) => p.id === params.id);
+  loader: async ({ params }) => {
+    const project = await getInvestProject({ data: { id: params.id } });
     if (!project) throw notFound();
     return { project };
   },
   head: ({ loaderData, params }) => {
     const p = loaderData?.project;
     const url = `https://miprojetinvest.lovable.app/projets/${params.id}`;
-    const title = p ? `${p.title ?? `${p.code} — ${p.sector}`} · MiPROJET Invest` : "Projet — MiPROJET Invest";
-    const desc = p?.summary ?? "Projet certifié disponible sur MiPROJET Invest.";
+    const title = p ? `${p.title} · MiPROJET Invest` : "Projet — MiPROJET Invest";
+    const desc = p?.summary?.slice(0, 155) || "Projet vérifié disponible sur MiPROJET Invest.";
+    const image = p?.coverUrl && p.coverUrl.startsWith("https://") ? p.coverUrl : null;
     return {
       meta: [
         { title },
@@ -31,49 +35,40 @@ export const Route = createFileRoute("/projets/$id")({
         { property: "og:description", content: desc },
         { property: "og:url", content: url },
         { property: "og:type", content: "product" },
-        ...(p?.image_url ? [
-          { property: "og:image", content: p.image_url },
-          { name: "twitter:image", content: p.image_url },
-        ] : []),
+        { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: desc },
-        ...(p ? [] : [{ name: "robots", content: "noindex" }]),
+        ...(image ? [{ property: "og:image", content: image }, { name: "twitter:image", content: image }] : []),
       ],
       links: [{ rel: "canonical", href: url }],
-      scripts: p ? [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Product",
-            name: p.title ?? `${p.code} — ${p.sector}`,
-            description: p.summary,
-            category: p.sector,
-            image: p.image_url,
-            url,
-            brand: { "@type": "Organization", name: "MiPROJET" },
-            offers: {
-              "@type": "Offer",
-              priceCurrency: "EUR",
-              price: p.amount_sought_eur,
-              availability: "https://schema.org/InStock",
-              url,
+      scripts: p
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Product",
+                name: p.title,
+                description: desc,
+                category: p.sector,
+                url,
+                brand: { "@type": "Organization", name: "MiPROJET" },
+              }),
             },
-          }),
-        },
-        {
-          type: "application/ld+json",
-          children: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Accueil", item: "https://miprojetinvest.lovable.app/" },
-              { "@type": "ListItem", position: 2, name: "Projets", item: "https://miprojetinvest.lovable.app/projets" },
-              { "@type": "ListItem", position: 3, name: p.title ?? `${p.code} — ${p.sector}`, item: url },
-            ],
-          }),
-        },
-      ] : undefined,
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  { "@type": "ListItem", position: 1, name: "Accueil", item: "https://miprojetinvest.lovable.app/" },
+                  { "@type": "ListItem", position: 2, name: "Projets", item: "https://miprojetinvest.lovable.app/projets" },
+                  { "@type": "ListItem", position: 3, name: p.title, item: url },
+                ],
+              }),
+            },
+          ]
+        : undefined,
     };
   },
   notFoundComponent: NotFound,
@@ -85,7 +80,7 @@ function NotFound() {
     <SiteShell>
       <div className="container-page py-24 text-center">
         <h1 className="text-3xl font-black">Projet introuvable</h1>
-        <p className="mt-2 text-muted-foreground">Il a peut-être été retiré du catalogue Invest.</p>
+        <p className="mt-2 text-muted-foreground">Il n'est plus publié dans le catalogue Invest.</p>
         <Link to="/projets"><Button className="mt-6">Retour au catalogue</Button></Link>
       </div>
     </SiteShell>
@@ -94,22 +89,44 @@ function NotFound() {
 
 function ProjectDetail() {
   const { project } = Route.useLoaderData();
-  const user = useMockUser();
-  const level = visibilityLevelFor(user);
-  const admin = isAdmin(user);
-  const [saved, setSaved] = useState(false);
-  const [demandeSent, setDemandeSent] = useState(false);
+  const { session, access, level, isAdmin, isPremium } = useAccess();
+  const qc = useQueryClient();
+  const favs = useFavorites();
+  const saved = favs.includes(project.id);
+  const [amount, setAmount] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleDemande = () => {
-    if (!user) return;
-    demandesStore.create({
-      project_code: project.code,
-      sector: project.sector,
-      amount_eur: Math.round(project.amount_sought_eur / 8),
-    });
-    setDemandeSent(true);
-  };
+  const analytics = useQuery({
+    queryKey: ["project-analytics", project.id, access?.userId],
+    queryFn: () => getProjectAnalytics({ data: { id: project.id } }),
+    enabled: !!session && (isPremium || isAdmin),
+  });
 
+  const documents = useQuery({
+    queryKey: ["project-documents", project.id, access?.userId],
+    queryFn: () => listProjectDocuments({ data: { projectId: project.id } }),
+    enabled: !!session,
+  });
+
+  const requests = useConnectionRequests(!!session);
+  const existing = (requests.data ?? []).find((r) => r.projectId === project.id);
+
+  const createRequest = useMutation({
+    mutationFn: () =>
+      createConnectionRequest({
+        data: {
+          projectId: project.id,
+          amount: amount ? Number(amount) : null,
+          message: message || undefined,
+        },
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["connection-requests"] });
+      qc.invalidateQueries({ queryKey: ["notifications"] });
+    },
+  });
+
+  const gallery = resolveGallery(project.gallery);
 
   return (
     <SiteShell>
@@ -119,147 +136,213 @@ function ProjectDetail() {
         </Link>
       </div>
 
-      {/* HERO */}
       <div className="container-page pt-4">
-        <div className="relative overflow-hidden rounded-3xl h-52 md:h-72 bg-muted">
+        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-muted sm:aspect-[21/9] md:rounded-3xl">
           <img
-            src={project.image_url ?? sectorImage(project.sector, 1400)}
-            alt={project.title ?? project.sector}
-            className="absolute inset-0 h-full w-full object-cover"
+            src={resolveCover(project.coverUrl, project.sector, project.title)}
+            alt={project.title}
+            className="absolute inset-0 h-full w-full object-cover object-center"
             loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-6 flex flex-wrap items-end justify-between gap-3 text-white">
-            <div>
-              <div className="text-xs font-mono opacity-80">{project.code}</div>
-              <div className="mt-1 text-2xl md:text-3xl font-black">{project.title ?? project.sector}</div>
-              <div className="mt-1 inline-flex items-center gap-1 text-sm opacity-90"><MapPin className="h-4 w-4" /> {project.country}</div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-3 p-4 text-white sm:p-6">
+            <div className="min-w-0">
+              {project.displayId && <div className="font-mono text-[11px] opacity-80">{project.displayId}</div>}
+              <h1 className="mt-1 text-xl font-black leading-tight sm:text-2xl md:text-3xl">{project.title}</h1>
+              <div className="mt-1 inline-flex items-center gap-1 text-xs opacity-90 sm:text-sm">
+                <MapPin className="h-4 w-4 shrink-0" /> {[project.city, project.country].filter(Boolean).join(", ")}
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full bg-white/20 backdrop-blur px-3 py-1.5 text-xs font-semibold">
-                {project.source === "GO" ? <><Sprout className="h-3.5 w-3.5" /> MiPROJET Go</> : <><Building2 className="h-3.5 w-3.5" /> MiPROJET+</>}
+              <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold ${project.channel === "GO" ? "bg-brand-green text-brand-green-foreground" : "bg-brand-orange text-brand-orange-foreground"}`}>
+                {project.channel === "GO" ? <><Sprout className="h-3.5 w-3.5" /> MiPROJET Go</> : <><Building2 className="h-3.5 w-3.5" /> MiPROJET+</>}
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-brand-gold text-brand-gold-foreground px-3 py-1.5 text-xs font-bold">
-                <ShieldCheck className="h-3.5 w-3.5" /> Certifié
-              </span>
+              {project.score != null && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-brand-gold px-3 py-1.5 text-xs font-bold text-brand-gold-foreground">
+                  <ShieldCheck className="h-3.5 w-3.5" /> Score {Math.round(project.score)}
+                </span>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container-page py-8 grid lg:grid-cols-[1fr_360px] gap-8">
-        {/* MAIN */}
-        <div className="space-y-6">
-          <LevelBadge level={level} />
+      <div className="container-page grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="min-w-0 space-y-6">
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-semibold ${level === 4 ? "bg-brand-gold text-brand-gold-foreground" : level === 3 ? "bg-brand-green text-brand-green-foreground" : level === 2 ? "bg-brand-blue text-brand-blue-foreground" : "bg-muted text-muted-foreground"}`}>
+              {level === 4 ? (isAdmin ? "Accès administrateur" : "Accès Premium") : level === 3 ? "Investisseur vérifié" : level === 2 ? "Accès membre" : "Aperçu public"}
+            </span>
+          </div>
 
           <Section title="Résumé du projet">
-            <p className="text-muted-foreground leading-relaxed">{project.summary}</p>
+            <p className="whitespace-pre-line leading-relaxed text-muted-foreground">{project.summary || "Résumé non communiqué."}</p>
           </Section>
 
-          {level >= 2 ? (
-            <Section title="Indicateurs">
-              <div className="grid sm:grid-cols-3 gap-3">
-                <Metric label="Équipe" value={`${project.team_size ?? "—"} pers.`} />
-                <Metric label="Stade" value={project.stage} />
-                <Metric label="Croissance / mois" value={`+${project.monthly_growth_percent}%`} tone="green" />
-              </div>
+          {session ? (
+            <Section title="Présentation détaillée">
+              <p className="whitespace-pre-line break-words leading-relaxed text-muted-foreground">
+                {project.description || "Présentation détaillée non renseignée par le porteur."}
+              </p>
+              {project.websiteUrl && (
+                <a href={project.websiteUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-blue hover:underline">
+                  <Globe className="h-4 w-4" /> Site du porteur
+                </a>
+              )}
             </Section>
           ) : (
-            <LockedSection reason="Connectez-vous pour voir les indicateurs et la progression détaillée." />
+            <LockedSection reason="Connectez-vous pour accéder à la présentation détaillée du projet." />
           )}
 
-          {level >= 3 ? (
-            <>
-              <Section title="Pitch détaillé">
-                <p className="text-muted-foreground leading-relaxed">{project.detailed_pitch}</p>
-              </Section>
-              <Section title="Analyses">
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <Metric label="CA mensuel" value={formatEUR(project.monthly_revenue_eur ?? 0)} />
-                  <Metric label="Ticket moyen investisseur" value={formatEUR(Math.round(project.amount_sought_eur / 8))} tone="blue" />
-                </div>
-              </Section>
-              <Section title="Espace documentaire">
-                <div className="rounded-2xl border border-border p-4 space-y-2">
-                  {Array.from({ length: project.documents_count }).map((_, i) => {
-                    // Progressive unlock: first 2 for verified, all for premium/admin
-                    const unlocked = admin || level >= 4 || i < 2;
-                    return <DocRow key={i} name={`Document confidentiel ${i + 1}.pdf`} unlocked={unlocked} />;
-                  })}
-                </div>
-                {!admin && level < 4 && (
-                  <p className="mt-3 text-xs text-muted-foreground">
-                    Aperçu limité aux 2 premiers documents. Passez Premium pour accéder à l'intégralité du dossier.
-                  </p>
-                )}
-              </Section>
-            </>
-          ) : (
-            <LockedSection reason="Devenez investisseur vérifié pour accéder au pitch complet, aux analyses et à l'espace documentaire." canUpgrade />
+          {gallery.length > 0 && session && (
+            <Section title="Galerie">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {gallery.map((g) => (
+                  <div key={g} className="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted">
+                    <img src={g} alt={project.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            </Section>
           )}
+
+          <Section title="Analyses avancées">
+            {isPremium || isAdmin ? (
+              analytics.isLoading ? (
+                <div className="text-sm text-muted-foreground">Chargement…</div>
+              ) : analytics.data ? (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Metric label="Rendement attendu" value={analytics.data.expectedRoi != null ? `${analytics.data.expectedRoi}%` : "—"} tone="green" />
+                  <Metric label="Note de risque" value={analytics.data.riskScore ?? "—"} />
+                  <Metric label="Capacité de remboursement" value={analytics.data.repaymentCapacity ?? "—"} />
+                  <Metric label="Financements recherchés" value={analytics.data.fundingTypes.join(", ") || "—"} />
+                  <Metric label="Montant déjà mobilisé" value={formatMoney(analytics.data.fundsRaised || analytics.data.currentFunding, project.currency)} tone="blue" />
+                  <Metric label="Recommandation" value={analytics.data.recommendationLevel ?? "—"} />
+                </div>
+              ) : (
+                <div className="text-sm text-muted-foreground">Analyses non disponibles pour ce projet.</div>
+              )
+            ) : (
+              <div className="rounded-2xl border border-brand-gold/30 bg-brand-gold/10 p-5 text-sm">
+                <div className="inline-flex items-center gap-2 font-semibold"><Crown className="h-4 w-4 text-brand-gold" /> Réservé aux investisseurs Premium</div>
+                <p className="mt-1 text-muted-foreground">Rendement attendu, note de risque, capacité de remboursement et montants mobilisés sont réservés aux abonnés Premium.</p>
+                <Link to="/premium"><Button className="mt-3 bg-brand-gold text-brand-gold-foreground hover:bg-brand-gold/90">Découvrir Premium</Button></Link>
+              </div>
+            )}
+          </Section>
+
+          <Section title="Espace documentaire">
+            {!session ? (
+              <p className="text-sm text-muted-foreground">Connectez-vous pour consulter les documents du projet.</p>
+            ) : documents.isLoading ? (
+              <div className="text-sm text-muted-foreground">Chargement des documents…</div>
+            ) : (documents.data?.length ?? 0) === 0 ? (
+              <p className="text-sm text-muted-foreground">Aucun document publié pour ce projet.</p>
+            ) : (
+              <>
+                <div className="divide-y divide-border rounded-2xl border border-border">
+                  {documents.data!.map((d) => (
+                    <div key={d.id} className="flex items-center gap-3 p-3">
+                      <FileText className="h-4 w-4 shrink-0 text-brand-gold" />
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-sm font-medium">{d.name}</div>
+                        {d.sizeBytes && <div className="text-[11px] text-muted-foreground">{Math.round(d.sizeBytes / 1024)} Ko</div>}
+                      </div>
+                      {d.unlocked && d.url ? (
+                        <a href={d.url} target="_blank" rel="noopener noreferrer">
+                          <Button size="sm" variant="outline">Consulter</Button>
+                        </a>
+                      ) : (
+                        <span className="inline-flex shrink-0 items-center gap-1 text-xs text-muted-foreground"><Lock className="h-3 w-3" /> Verrouillé</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  <Link to="/data-room/$id" params={{ id: project.id }} className="font-semibold text-brand-blue hover:underline">Ouvrir l'espace documentaire complet →</Link>
+                </p>
+              </>
+            )}
+          </Section>
         </div>
 
-        {/* SIDEBAR */}
-        <aside className="space-y-5 lg:sticky lg:top-20 lg:self-start">
-          <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
+        <aside className="min-w-0 space-y-5 lg:sticky lg:top-20 lg:self-start">
+          <div className="space-y-4 rounded-2xl border border-border bg-card p-5">
             <div>
-              <div className="text-xs text-muted-foreground">Recherche</div>
-              <div className="text-2xl font-black">{formatEUR(project.amount_sought_eur)}</div>
-            </div>
-            <div>
-              <div className="flex items-center justify-between text-xs mb-1.5">
-                <span className="text-muted-foreground">Engagé</span>
-                <span className="font-semibold">{formatEUR(project.amount_committed_eur)} · {project.progress_percent}%</span>
-              </div>
-              <div className="h-2 rounded-full bg-muted overflow-hidden">
-                <div className="h-full gradient-brand rounded-full" style={{ width: `${Math.min(100, project.progress_percent)}%` }} />
+              <div className="text-xs text-muted-foreground">Recherche de financement</div>
+              <div className="text-xl font-black sm:text-2xl">
+                {project.amountSought > 0 ? formatMoney(project.amountSought, project.currency) : "Montant sur demande"}
               </div>
             </div>
+            {project.amountSought > 0 && (
+              <div>
+                <div className="mb-1.5 flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Engagé</span>
+                  <span className="font-semibold">{project.progressPercent}%</span>
+                </div>
+                <div className="h-2 overflow-hidden rounded-full bg-muted">
+                  <div className="h-full rounded-full bg-brand-gold" style={{ width: `${project.progressPercent}%` }} />
+                </div>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-2 text-xs">
-              <MiniInfo icon={<TrendingUp className="h-3.5 w-3.5" />} label="Stade" value={project.stage} />
-              <MiniInfo icon={<Users className="h-3.5 w-3.5" />} label="Équipe" value={`${project.team_size ?? "—"}`} />
-              <MiniInfo icon={<MapPin className="h-3.5 w-3.5" />} label="Localisation" value={level >= 3 ? project.country : "•••••"} />
-              <MiniInfo icon={<FileText className="h-3.5 w-3.5" />} label="Documents" value={String(project.documents_count)} />
+              <MiniInfo icon={<TrendingUp className="h-3.5 w-3.5" />} label="Secteur" value={project.sector} />
+              <MiniInfo icon={<MapPin className="h-3.5 w-3.5" />} label="Pays" value={project.country} />
+              <MiniInfo icon={<FileText className="h-3.5 w-3.5" />} label="Documents" value={String(project.documentsCount)} />
+              <MiniInfo icon={<ShieldCheck className="h-3.5 w-3.5" />} label="Canal" value={project.channel === "GO" ? "Go" : "MiPROJET+"} />
             </div>
 
-            <div className="space-y-2 pt-2">
-              <Button
-                onClick={handleDemande}
-                disabled={demandeSent || !user}
-                className="w-full bg-brand-gold text-brand-gold-foreground hover:bg-brand-gold/90 gap-2"
-              >
-                {demandeSent ? <><CheckCircle2 className="h-4 w-4" /> Demande envoyée</> : <><Send className="h-4 w-4" /> Demander une mise en relation</>}
-              </Button>
-              <Button variant="outline" className="w-full gap-2" onClick={() => setSaved((s) => !s)}>
-                <Bookmark className={cn("h-4 w-4", saved && "fill-brand-blue text-brand-blue")} />
-                {saved ? "Retiré des favoris" : "Ajouter aux favoris"}
-              </Button>
-            </div>
+            {session ? (
+              existing || createRequest.isSuccess ? (
+                <div className="rounded-xl border border-brand-green/30 bg-brand-green/10 p-3 text-xs">
+                  <div className="inline-flex items-center gap-1.5 font-semibold text-brand-green"><CheckCircle2 className="h-4 w-4" /> Demande enregistrée</div>
+                  <p className="mt-1 text-muted-foreground">Suivez son avancement depuis <Link to="/demandes" className="underline">vos demandes</Link>.</p>
+                </div>
+              ) : (
+                <div className="space-y-2 pt-2">
+                  <label className="text-xs font-medium text-muted-foreground" htmlFor="ticket">Ticket envisagé ({project.currency})</label>
+                  <Input id="ticket" inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value.replace(/\D/g, ""))} placeholder="Ex. 5 000 000" />
+                  <label className="text-xs font-medium text-muted-foreground" htmlFor="msg">Message au comité</label>
+                  <textarea
+                    id="msg"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    rows={3}
+                    className="w-full rounded-md border border-input bg-background p-2 text-sm"
+                    placeholder="Présentez brièvement votre intérêt."
+                  />
+                  <Button
+                    onClick={() => createRequest.mutate()}
+                    disabled={createRequest.isPending}
+                    className="w-full gap-2 bg-brand-gold text-brand-gold-foreground hover:bg-brand-gold/90"
+                  >
+                    {createRequest.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                    Demander une mise en relation
+                  </Button>
+                  {createRequest.isError && <p className="text-xs text-destructive">Envoi impossible. Réessayez.</p>}
+                </div>
+              )
+            ) : (
+              <Link to="/auth">
+                <Button className="w-full gap-2 bg-brand-gold text-brand-gold-foreground hover:bg-brand-gold/90">
+                  <Send className="h-4 w-4" /> Se connecter pour demander une mise en relation
+                </Button>
+              </Link>
+            )}
 
-            <div className="rounded-xl bg-brand-brick/8 border border-brand-brick/20 p-3 text-xs">
-              <div className="flex gap-1.5"><Lock className="h-3.5 w-3.5 text-brand-brick shrink-0 mt-0.5" />
-                <span><span className="font-semibold text-brand-brick">Mise en relation qualifiée.</span> Communication qualifiée via la plateforme.</span>
+            <Button variant="outline" className="w-full gap-2" onClick={() => favorites.toggle(project.id)}>
+              <Bookmark className={cn("h-4 w-4", saved && "fill-brand-gold text-brand-gold")} />
+              {saved ? "Retirer des favoris" : "Ajouter aux favoris"}
+            </Button>
+
+            <div className="rounded-xl border border-border bg-muted/40 p-3 text-xs">
+              <div className="flex gap-1.5">
+                <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-gold" />
+                <span><span className="font-semibold">Mise en relation qualifiée.</span> Les échanges passent par la plateforme après validation MiPROJET.</span>
               </div>
             </div>
           </div>
-
-          {!user && (
-            <div className="rounded-2xl border border-brand-blue/30 bg-brand-blue/8 p-5">
-              <div className="text-sm font-semibold">Débloquez plus de détails</div>
-              <p className="mt-1 text-xs text-muted-foreground">Créez un compte pour accéder au Accès Membre et suivre les projets.</p>
-              <Link to="/auth"><Button className="mt-3 w-full bg-brand-blue text-brand-blue-foreground hover:bg-brand-blue/90">Créer mon compte</Button></Link>
-            </div>
-          )}
-          {user && !user.verified && (
-            <div className="rounded-2xl border border-brand-green/30 bg-brand-green/8 p-5">
-              <div className="text-sm font-semibold">Devenir investisseur vérifié</div>
-              <p className="mt-1 text-xs text-muted-foreground">Accédez à l'espace documentaire, aux analyses et au pitch détaillé après vérification.</p>
-              <Button onClick={() => mockAuth.becomeVerified()} className="mt-3 w-full bg-brand-green text-brand-green-foreground hover:bg-brand-green/90">
-                Démarrer la vérification
-              </Button>
-            </div>
-          )}
         </aside>
       </div>
     </SiteShell>
@@ -268,71 +351,38 @@ function ProjectDetail() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-2xl border border-border bg-card p-6">
+    <section className="min-w-0 rounded-2xl border border-border bg-card p-5 sm:p-6">
       <h2 className="text-lg font-bold">{title}</h2>
       <div className="mt-3">{children}</div>
     </section>
   );
 }
 
-function LockedSection({ reason, canUpgrade }: { reason: string; canUpgrade?: boolean }) {
+function LockedSection({ reason }: { reason: string }) {
   return (
-    <div className="rounded-2xl border border-dashed border-border p-6 text-center bg-muted/40">
-      <EyeOff className="h-6 w-6 mx-auto text-muted-foreground" />
-      <p className="mt-3 text-sm text-muted-foreground max-w-md mx-auto">{reason}</p>
-      <div className="mt-4 flex justify-center gap-2">
-        <Link to="/auth"><Button variant="outline">Connexion</Button></Link>
-        {canUpgrade && <Button onClick={() => mockAuth.becomeVerified()} className="bg-brand-green text-brand-green-foreground hover:bg-brand-green/90">Démarrer la vérification</Button>}
-      </div>
+    <div className="rounded-2xl border border-dashed border-border bg-muted/40 p-6 text-center">
+      <EyeOff className="mx-auto h-6 w-6 text-muted-foreground" />
+      <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">{reason}</p>
+      <Link to="/auth"><Button variant="outline" className="mt-4">Connexion</Button></Link>
     </div>
   );
 }
 
-function Metric({ label, value, tone }: { label: string; value: string | number; tone?: "blue" | "green" }) {
+function Metric({ label, value, tone }: { label: string; value: string; tone?: "blue" | "green" }) {
   const color = tone === "green" ? "text-brand-green" : tone === "blue" ? "text-brand-blue" : "text-foreground";
   return (
-    <div className="rounded-xl border border-border p-3">
+    <div className="min-w-0 rounded-xl border border-border p-3">
       <div className="text-xs text-muted-foreground">{label}</div>
-      <div className={`mt-1 text-lg font-bold capitalize ${color}`}>{value}</div>
+      <div className={`mt-1 break-words text-base font-bold ${color}`}>{value}</div>
     </div>
   );
 }
 
 function MiniInfo({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-lg bg-muted p-2">
+    <div className="min-w-0 rounded-lg bg-muted p-2">
       <div className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wide text-muted-foreground">{icon}{label}</div>
-      <div className="mt-0.5 text-sm font-semibold capitalize truncate">{value}</div>
-    </div>
-  );
-}
-
-function DocRow({ name, unlocked }: { name: string; unlocked: boolean }) {
-  return (
-    <div className="flex items-center gap-3 py-2 border-b border-border last:border-0">
-      <FileText className="h-4 w-4 text-brand-blue shrink-0" />
-      <div className="text-sm flex-1 truncate">{name}</div>
-      {unlocked ? (
-        <Button size="sm" variant="outline">Consulter</Button>
-      ) : (
-        <span className="inline-flex items-center gap-1 text-xs text-muted-foreground"><Lock className="h-3 w-3" /> Verrouillé</span>
-      )}
-    </div>
-  );
-}
-
-function LevelBadge({ level }: { level: 1 | 2 | 3 | 4 }) {
-  const cfg = {
-    1: { c: "bg-slate-500", t: "Aperçu public" },
-    2: { c: "bg-brand-blue text-white", t: "Accès membre" },
-    3: { c: "bg-brand-green text-white", t: "Investisseur vérifié" },
-    4: { c: "bg-brand-gold text-brand-gold-foreground", t: "Accès Premium" },
-  }[level];
-  return (
-    <div className="flex items-center gap-2 text-xs">
-      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-semibold ${cfg.c}`}>
-        <AlertCircle className="h-3.5 w-3.5" /> {cfg.t}
-      </span>
+      <div className="mt-0.5 truncate text-sm font-semibold">{value}</div>
     </div>
   );
 }

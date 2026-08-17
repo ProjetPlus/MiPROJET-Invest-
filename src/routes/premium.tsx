@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
 import { Check, Sparkles, Star } from "lucide-react";
-import { mockAuth, useMockUser } from "@/lib/auth-store";
+import { useAccess } from "@/lib/use-auth";
 
 export const Route = createFileRoute("/premium")({
   head: () => ({ meta: [{ title: "Premium Investisseur — MiPROJET Invest" }, { name: "description", content: "Accès prioritaire aux projets, analyses avancées et visibilité accrue avec l'offre Premium." }] }),
@@ -20,7 +20,7 @@ const PREMIUM = [
 ];
 
 function PremiumPage() {
-  const user = useMockUser();
+  const { isAdmin, isPremium } = useAccess();
   return (
     <SiteShell>
       <div className="container-page py-14">
@@ -54,11 +54,11 @@ function PremiumPage() {
               {PREMIUM.map((f) => <li key={f} className="flex gap-2"><Check className="h-4 w-4 text-brand-gold shrink-0 mt-0.5" /> {f}</li>)}
             </ul>
             <Button
-              onClick={() => { if (!user) mockAuth.signIn("demo@miprojet.com"); mockAuth.becomePremium(); }}
+              
               className="w-full mt-8 bg-brand-gold text-brand-gold-foreground hover:bg-brand-gold/90"
-              disabled={user?.admin || user?.premium}
+              disabled={isAdmin || isPremium}
             >
-              {user?.admin ? "✓ Accès total (admin)" : user?.premium ? "✓ Premium actif" : "Passer Premium"}
+              {isAdmin ? "✓ Accès total (admin)" : isPremium ? "✓ Premium actif" : "Passer Premium"}
             </Button>
           </div>
         </div>
