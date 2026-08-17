@@ -185,7 +185,9 @@ export type Database = {
       connection_requests: {
         Row: {
           admin_notes: string | null
+          amount: number | null
           created_at: string
+          currency: string
           id: string
           meeting_at: string | null
           meeting_link: string | null
@@ -202,7 +204,9 @@ export type Database = {
         }
         Insert: {
           admin_notes?: string | null
+          amount?: number | null
           created_at?: string
+          currency?: string
           id?: string
           meeting_at?: string | null
           meeting_link?: string | null
@@ -219,7 +223,9 @@ export type Database = {
         }
         Update: {
           admin_notes?: string | null
+          amount?: number | null
           created_at?: string
+          currency?: string
           id?: string
           meeting_at?: string | null
           meeting_link?: string | null
