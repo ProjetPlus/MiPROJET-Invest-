@@ -110,17 +110,20 @@ export const listTenders = createServerFn({ method: "GET" }).handler(
     const supabase = createPublicClient();
     const { data } = await supabase
       .from("tenders")
-      .select("id, title, organization, country, sector, deadline, source_url")
+      .select(
+        "id, notice_title, title_fr, summary, summary_fr, slug, country, country_name, sector, deadline, notice_deadline, status",
+      )
+      .eq("status", "active")
       .order("deadline", { ascending: true, nullsFirst: false })
       .limit(40);
     return ((data ?? []) as Record<string, any>[]).map((t) => ({
       id: t.id,
-      title: t.title,
-      organization: t.organization ?? null,
-      country: t.country ?? null,
+      title: t.title_fr ?? t.notice_title ?? "Appel d'offres",
+      summary: t.summary_fr ?? t.summary ?? null,
+      country: t.country_name ?? t.country ?? null,
       sector: t.sector ?? null,
-      deadline: t.deadline ?? null,
-      sourceUrl: t.source_url ?? null,
+      deadline: t.deadline ?? t.notice_deadline ?? null,
+      slug: t.slug ?? null,
     }));
   },
 );
