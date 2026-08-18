@@ -965,6 +965,51 @@ export type Database = {
         }
         Relationships: []
       }
+      go_sync_runs: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          details: Json
+          error: string | null
+          id: string
+          modules_pushed: number
+          roles_pushed: number
+          settings_pushed: number
+          signal_id: string | null
+          status: string
+          trigger: string
+          updated_at: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          error?: string | null
+          id?: string
+          modules_pushed?: number
+          roles_pushed?: number
+          settings_pushed?: number
+          signal_id?: string | null
+          status?: string
+          trigger?: string
+          updated_at?: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          details?: Json
+          error?: string | null
+          id?: string
+          modules_pushed?: number
+          roles_pushed?: number
+          settings_pushed?: number
+          signal_id?: string | null
+          status?: string
+          trigger?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       import_sessions: {
         Row: {
           created_at: string
@@ -4638,6 +4683,14 @@ export type Database = {
         Args: { _id: string; _provider: string }
         Returns: undefined
       }
+      mp_can_read_document: {
+        Args: {
+          _min_role: Database["public"]["Enums"]["org_role"]
+          _org_id: string
+          _owner_id: string
+        }
+        Returns: boolean
+      }
       mp_recompute_score: { Args: { _project_id: string }; Returns: undefined }
       mp_resync_scoring: { Args: { _project_id?: string }; Returns: Json }
       mp_rls_test_report: {
@@ -4655,6 +4708,7 @@ export type Database = {
         Args: { _min: Database["public"]["Enums"]["org_role"]; _org: string }
         Returns: boolean
       }
+      owns_any_project: { Args: { _user_id: string }; Returns: boolean }
       pick_email_provider: { Args: never; Returns: string }
       role_rank: {
         Args: { _r: Database["public"]["Enums"]["org_role"] }
