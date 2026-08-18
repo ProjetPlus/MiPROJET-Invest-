@@ -8,7 +8,7 @@ import {
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getInvestProject, getProjectAnalytics, createConnectionRequest, listProjectDocuments } from "@/lib/invest.functions";
+import { getInvestProject, getProjectAnalytics, getProjectMemberContent, createConnectionRequest, listProjectDocuments } from "@/lib/invest.functions";
 import { formatMoney } from "@/lib/invest-types";
 import { resolveCover, resolveGallery } from "@/lib/project-media";
 import { useAccess, useConnectionRequests } from "@/lib/use-auth";
@@ -126,7 +126,13 @@ function ProjectDetail() {
     },
   });
 
-  const gallery = resolveGallery(project.gallery);
+  const memberContent = useQuery({
+    queryKey: ["project-member-content", project.id, access?.userId],
+    queryFn: () => getProjectMemberContent({ data: { id: project.id } }),
+    enabled: !!session,
+  });
+
+  const gallery = resolveGallery(memberContent.data?.gallery ?? []);
 
   return (
     <SiteShell>
@@ -182,7 +188,9 @@ function ProjectDetail() {
           {session ? (
             <Section title="Présentation détaillée">
               <p className="whitespace-pre-line break-words leading-relaxed text-muted-foreground">
-                {project.description || "Présentation détaillée non renseignée par le porteur."}
+                {memberContent.isLoading
+                  ? "Chargement…"
+                  : memberContent.data?.description || "Présentation détaillée non renseignée par le porteur."}
               </p>
               {project.websiteUrl && (
                 <a href={project.websiteUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-blue hover:underline">
