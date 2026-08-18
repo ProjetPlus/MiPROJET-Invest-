@@ -30,18 +30,9 @@ export const listInvestProjects = createServerFn({ method: "GET" }).handler(
       .limit(200);
     if (error) throw new Error(error.message);
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const rows = (data ?? []) as unknown as Record<string, any>[];
-    const owners = [...new Set(rows.map((r) => r.owner_id).filter(Boolean))];
-    const counts = new Map<string, number>();
-    if (owners.length) {
-      const { data: docs } = await supabaseAdmin
-        .from("mp_documents")
-        .select("owner_id")
-        .in("owner_id", owners);
-      for (const d of docs ?? []) counts.set(d.owner_id as string, (counts.get(d.owner_id as string) ?? 0) + 1);
-    }
-    return rows.map((r) => mapProject(r, counts.get(r.owner_id) ?? 0));
+    // Le nombre de documents n'est jamais exposé publiquement (dossier réservé aux membres).
+    return rows.map((r) => mapProject(r, 0));
   },
 );
 
