@@ -51,12 +51,7 @@ export const getInvestProject = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     if (!row) return null;
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { count } = await supabaseAdmin
-      .from("mp_documents")
-      .select("id", { count: "exact", head: true })
-      .eq("owner_id", (row as Record<string, any>).owner_id);
-    const detail = mapProjectDetail(row as unknown as Record<string, any>, count ?? 0, false);
+    const detail = mapProjectDetail(row as unknown as Record<string, any>, 0, false);
     // Contenu réservé aux membres connectés : jamais dans la charge SSR publique.
     return { ...detail, description: null, gallery: [] };
   });
