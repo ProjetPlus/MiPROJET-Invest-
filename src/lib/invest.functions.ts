@@ -65,7 +65,24 @@ export const getInvestProject = createServerFn({ method: "GET" })
       .from("mp_documents")
       .select("id", { count: "exact", head: true })
       .eq("owner_id", (row as Record<string, any>).owner_id);
-    return mapProjectDetail(row as unknown as Record<string, any>, count ?? 0, false);
+    const detail = mapProjectDetail(row as unknown as Record<string, any>, count ?? 0, false);
+    // Contenu réservé aux membres connectés : jamais dans la charge SSR publique.
+    return { ...detail, description: null, gallery: [] };
+  });
+
+/** Contenu réservé aux membres connectés : présentation détaillée + galerie. */
+export const getProjectMemberContent = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string }) => data)
+  .handler(async ({ data, context }): Promise<{ description: string | null; gallery: string[] } | null> => {
+    const { data: row } = await context.supabase
+      .from("projects")
+      .select("description, gallery_urls, status, is_public")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (!row) return null;
+    const r = row as Record<string, any>;
+    return { description: r.description ?? null, gallery: (r.gallery_urls ?? []) as string[] };
   });
 
 /** Niveau d'accès de l'investisseur connecté (admin = accès total automatique). */
