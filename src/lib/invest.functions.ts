@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   createPublicClient,
-  documentQuota,
+  
   mapProject,
   mapProjectDetail,
   PROJECT_PUBLIC_COLUMNS,
@@ -30,18 +30,9 @@ export const listInvestProjects = createServerFn({ method: "GET" }).handler(
       .limit(200);
     if (error) throw new Error(error.message);
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const rows = (data ?? []) as unknown as Record<string, any>[];
-    const owners = [...new Set(rows.map((r) => r.owner_id).filter(Boolean))];
-    const counts = new Map<string, number>();
-    if (owners.length) {
-      const { data: docs } = await supabaseAdmin
-        .from("mp_documents")
-        .select("owner_id")
-        .in("owner_id", owners);
-      for (const d of docs ?? []) counts.set(d.owner_id as string, (counts.get(d.owner_id as string) ?? 0) + 1);
-    }
-    return rows.map((r) => mapProject(r, counts.get(r.owner_id) ?? 0));
+    // Le nombre de documents n'est jamais exposé publiquement (dossier réservé aux membres).
+    return rows.map((r) => mapProject(r, 0));
   },
 );
 
@@ -60,12 +51,7 @@ export const getInvestProject = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     if (!row) return null;
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { count } = await supabaseAdmin
-      .from("mp_documents")
-      .select("id", { count: "exact", head: true })
-      .eq("owner_id", (row as Record<string, any>).owner_id);
-    const detail = mapProjectDetail(row as unknown as Record<string, any>, count ?? 0, false);
+    const detail = mapProjectDetail(row as unknown as Record<string, any>, 0, false);
     // Contenu réservé aux membres connectés : jamais dans la charge SSR publique.
     return { ...detail, description: null, gallery: [] };
   });
@@ -149,49 +135,30 @@ export const listProjectDocuments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { projectId: string }) => data)
   .handler(async ({ data, context }): Promise<ProjectDocument[]> => {
-    const { supabase, userId } = context;
-    const [{ data: isAdmin }, { data: isPremium }, { data: profile }] = await Promise.all([
-      supabase.rpc("has_role", { _user_id: userId, _role: "admin" }),
-      supabase.rpc("has_active_subscription", { _user_id: userId }),
-      supabase.from("profiles").select("is_verified").eq("id", userId).maybeSingle(),
-    ]);
-    const level = isAdmin || isPremium ? 4 : profile?.is_verified ? 3 : 2;
-    const quota = documentQuota(level);
-
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: project } = await supabaseAdmin
-      .from("projects")
-      .select("owner_id, status, is_public")
-      .eq("id", data.projectId)
-      .maybeSingle();
-    if (!project || project.status !== "published" || !project.is_public) return [];
-
-    const { data: docs } = await supabaseAdmin
-      .from("mp_documents")
-      .select("id, name, size_bytes, storage_path, created_at")
-      .eq("owner_id", project.owner_id)
-      .order("created_at", { ascending: true });
+    const { supabase } = context;
+    // Le quota de déblocage progressif est appliqué côté base (fonction sécurisée).
+    const { data: docs, error } = await (supabase as any).rpc("invest_project_documents", {
+      _project_id: data.projectId,
+    });
+    if (error) return [];
 
     const out: ProjectDocument[] = [];
-    let i = 0;
-    for (const d of docs ?? []) {
-      const unlocked = i < quota;
+    for (const d of (docs ?? []) as Record<string, any>[]) {
       let url: string | null = null;
-      if (unlocked && d.storage_path) {
-        const { data: signed } = await supabaseAdmin.storage
+      if (d.unlocked && d.storage_path) {
+        const { data: signed } = await supabase.storage
           .from("documents")
-          .createSignedUrl(d.storage_path, 300);
+          .createSignedUrl(d.storage_path as string, 300);
         url = signed?.signedUrl ?? null;
       }
       out.push({
         id: d.id,
         name: d.name,
-        sizeBytes: d.size_bytes ? Number(d.size_bytes) : null,
-        createdAt: d.created_at,
-        unlocked,
+        sizeBytes: d.size_bytes != null ? Number(d.size_bytes) : null,
+        createdAt: d.created_at ?? null,
+        unlocked: Boolean(d.unlocked),
         url,
       });
-      i += 1;
     }
     return out;
   });
