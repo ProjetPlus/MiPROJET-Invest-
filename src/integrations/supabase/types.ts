@@ -4738,6 +4738,17 @@ export type Database = {
         Returns: number
       }
       increment_tender_views: { Args: { _id: string }; Returns: undefined }
+      invest_project_documents: {
+        Args: { _project_id: string }
+        Returns: {
+          created_at: string
+          id: string
+          name: string
+          size_bytes: number
+          storage_path: string
+          unlocked: boolean
+        }[]
+      }
       is_any_admin: { Args: { _user_id: string }; Returns: boolean }
       is_email_unsubscribed: { Args: { _email: string }; Returns: boolean }
       is_org_member: { Args: { _org_id: string }; Returns: boolean }
