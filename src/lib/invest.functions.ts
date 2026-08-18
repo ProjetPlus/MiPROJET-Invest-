@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   createPublicClient,
-  documentQuota,
+  
   mapProject,
   mapProjectDetail,
   PROJECT_PUBLIC_COLUMNS,
