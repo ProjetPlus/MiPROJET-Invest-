@@ -29,11 +29,11 @@ export interface OpportunityItem {
 export interface TenderItem {
   id: string;
   title: string;
-  organization: string | null;
+  summary: string | null;
   country: string | null;
   sector: string | null;
   deadline: string | null;
-  sourceUrl: string | null;
+  slug: string | null;
 }
 
 export interface PlanItem {
