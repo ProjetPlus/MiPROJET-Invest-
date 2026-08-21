@@ -3,9 +3,16 @@ import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
 import { Check, Sparkles, Star } from "lucide-react";
 import { useAccess } from "@/lib/use-auth";
+import { listPlans, listFaqs } from "@/lib/ecosystem.functions";
 
 export const Route = createFileRoute("/premium")({
   head: () => ({ meta: [{ title: "Premium Investisseur — MiPROJET Invest" }, { name: "description", content: "Accès prioritaire aux projets, analyses avancées et visibilité accrue avec l'offre Premium." }] }),
+  loader: async () => {
+    const [plans, faqs] = await Promise.all([listPlans(), listFaqs()]);
+    return { plans, faqs };
+  },
+  errorComponent: () => <SiteShell><div className="container-page py-16">Contenu momentanément indisponible.</div></SiteShell>,
+  notFoundComponent: () => <SiteShell><div className="container-page py-16">Introuvable.</div></SiteShell>,
   component: PremiumPage,
 });
 
@@ -21,6 +28,7 @@ const PREMIUM = [
 
 function PremiumPage() {
   const { isAdmin, isPremium } = useAccess();
+  const { plans, faqs } = Route.useLoaderData();
   return (
     <SiteShell>
       <div className="container-page py-14">
@@ -62,6 +70,45 @@ function PremiumPage() {
             </Button>
           </div>
         </div>
+
+        {plans.length > 0 && (
+          <section className="mt-16 max-w-5xl mx-auto">
+            <h2 className="text-2xl font-black">Offres de l'écosystème MiPROJET</h2>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {plans.map((p) => (
+                <div key={p.id} className="rounded-2xl border border-border bg-card p-5 flex flex-col">
+                  <h3 className="font-bold break-words">{p.name}</h3>
+                  <div className="mt-1 text-2xl font-black">
+                    {p.price != null ? `${new Intl.NumberFormat("fr-FR").format(p.price)} ${p.currency}` : "Sur devis"}
+                    {p.durationType && <span className="text-sm font-normal text-muted-foreground"> / {p.durationType}</span>}
+                  </div>
+                  {p.description && <p className="mt-2 text-sm text-muted-foreground">{p.description}</p>}
+                  {p.features.length > 0 && (
+                    <ul className="mt-3 space-y-1.5 text-sm">
+                      {p.features.map((f) => (
+                        <li key={f} className="flex gap-2"><Check className="h-4 w-4 text-primary shrink-0 mt-0.5" /><span className="break-words">{f}</span></li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {faqs.length > 0 && (
+          <section className="mt-16 max-w-3xl mx-auto">
+            <h2 className="text-2xl font-black">Questions fréquentes</h2>
+            <div className="mt-6 space-y-3">
+              {faqs.map((f) => (
+                <details key={f.id} className="rounded-xl border border-border bg-card p-4">
+                  <summary className="cursor-pointer font-semibold text-sm break-words">{f.question}</summary>
+                  <p className="mt-2 text-sm text-muted-foreground whitespace-pre-line">{f.answer}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
 
         <p className="text-xs text-center text-muted-foreground mt-8">Paiement mensuel, résiliable à tout moment. Facturation en euros via MiPROJET.</p>
       </div>

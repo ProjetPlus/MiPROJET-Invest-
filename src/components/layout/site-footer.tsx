@@ -19,6 +19,9 @@ export function SiteFooter() {
           <FLink to="/projets">Opportunités</FLink>
           <FLink to="/secteurs">Secteurs</FLink>
           <FLink to="/processus">Processus</FLink>
+          <FLink to="/opportunites">Opportunités de financement</FLink>
+          <FLink to="/appels-offres">Appels d'offres</FLink>
+          <FLink to="/actualites">Actualités</FLink>
           <FLink to="/premium">Premium</FLink>
         </FooterCol>
 

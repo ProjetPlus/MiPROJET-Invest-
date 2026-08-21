@@ -1,6 +1,5 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
 
 // Minimal translation resources — the platform is structured for i18n.
 // Additional keys are added progressively; missing keys fall back to French.
@@ -149,30 +148,41 @@ const resources = {
   },
 } as const;
 
-if (typeof window !== "undefined" && !i18n.isInitialized) {
-  i18n
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .init({
-      resources: resources as never,
-      fallbackLng: "fr",
-      supportedLngs: ["fr", "en", "es", "de", "ar", "zh"],
-      interpolation: { escapeValue: false },
-      detection: { order: ["localStorage", "navigator"], caches: ["localStorage"] },
-    })
-    .then(() => {
-      const lang = i18n.language || "fr";
-      document.documentElement.lang = lang;
-      document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-    });
-
-  i18n.on("languageChanged", (lng) => {
-    document.documentElement.lang = lng;
-    document.documentElement.dir = lng === "ar" ? "rtl" : "ltr";
+// Initialise de façon déterministe (serveur ET client) en français,
+// pour que le HTML SSR corresponde exactement au premier rendu client.
+if (!i18n.isInitialized) {
+  void i18n.use(initReactI18next).init({
+    resources: resources as never,
+    lng: "fr",
+    fallbackLng: "fr",
+    supportedLngs: ["fr", "en", "es", "de", "ar", "zh"],
+    interpolation: { escapeValue: false },
+    react: { useSuspense: false },
   });
 }
 
+/** Applique la langue mémorisée/détectée — à appeler après l'hydratation. */
+export function initClientLanguage() {
+  if (typeof window === "undefined") return;
+  const stored = window.localStorage.getItem("i18nextLng");
+  const nav = window.navigator.language?.slice(0, 2);
+  const lang = ["fr", "en", "es", "de", "ar", "zh"].includes(stored ?? "")
+    ? (stored as string)
+    : ["fr", "en", "es", "de", "ar", "zh"].includes(nav ?? "")
+      ? (nav as string)
+      : "fr";
+  const apply = (lng: string) => {
+    document.documentElement.lang = lng;
+    document.documentElement.dir = lng === "ar" ? "rtl" : "ltr";
+    window.localStorage.setItem("i18nextLng", lng);
+  };
+  if (lang !== i18n.language) void i18n.changeLanguage(lang);
+  apply(lang);
+  i18n.on("languageChanged", apply);
+}
+
 export default i18n;
+
 export const SUPPORTED_LANGS: { code: string; label: string; flag: string }[] = [
   { code: "fr", label: "Français", flag: "🇫🇷" },
   { code: "en", label: "English", flag: "🇬🇧" },

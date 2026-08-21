@@ -5,6 +5,7 @@ import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
 import { ProjectCard } from "@/components/project/project-card";
 import { listInvestProjects } from "@/lib/invest.functions";
+import { getEcosystemStats } from "@/lib/ecosystem.functions";
 import { formatMoney } from "@/lib/invest-types";
 
 const formatEUR = (n: number) => formatMoney(n);
@@ -22,7 +23,10 @@ const HOME_TITLE = "MiPROJET Invest — Investir dans l'Afrique qui se construit
 const HOME_DESC = "Découvrez des projets africains certifiés issus de MiPROJET Go et MiPROJET+. Investissez dans l'agriculture, l'énergie, la fintech et plus, avec mise en relation qualifiée.";
 
 export const Route = createFileRoute("/")({
-  loader: async () => ({ projects: await listInvestProjects() }),
+  loader: async () => {
+    const [projects, stats] = await Promise.all([listInvestProjects(), getEcosystemStats()]);
+    return { projects, stats };
+  },
   head: ({ loaderData }) => ({
     meta: [
       { title: HOME_TITLE },
@@ -56,7 +60,7 @@ export const Route = createFileRoute("/")({
 
 function LandingPage() {
   const { t } = useTranslation();
-  const { projects } = Route.useLoaderData();
+  const { projects, stats } = Route.useLoaderData();
   const featured = projects.slice(0, 6);
   const SECTORS = [...new Set(projects.map((p) => p.sector))];
 
@@ -145,6 +149,25 @@ function LandingPage() {
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {featured.map((p) => <ProjectCard key={p.id} project={p} />)}
+        </div>
+      </section>
+
+      {/* CHIFFRES RÉELS */}
+      <section className="container-page py-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { v: stats.projects, l: "Projets publiés" },
+            { v: stats.opportunities, l: "Opportunités de financement" },
+            { v: stats.tenders, l: "Appels d'offres suivis" },
+            { v: stats.news, l: "Actualités publiées" },
+          ].map((k) => (
+            <div key={k.l} className="rounded-2xl border border-border bg-card p-5 text-center">
+              <div className="text-2xl md:text-3xl font-black text-primary">
+                {new Intl.NumberFormat("fr-FR").format(k.v)}
+              </div>
+              <div className="mt-1 text-xs md:text-sm text-muted-foreground break-words">{k.l}</div>
+            </div>
+          ))}
         </div>
       </section>
 
