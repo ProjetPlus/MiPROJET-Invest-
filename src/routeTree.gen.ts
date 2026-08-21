@@ -16,6 +16,7 @@ import { Route as SecteursRouteImport } from './routes/secteurs'
 import { Route as ProjetsRouteImport } from './routes/projets'
 import { Route as ProcessusRouteImport } from './routes/processus'
 import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as OpportunitesRouteImport } from './routes/opportunites'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as GuideInvestissementAfriqueRouteImport } from './routes/guide-investissement-afrique'
 import { Route as FavorisRouteImport } from './routes/favoris'
@@ -64,6 +65,11 @@ const ProcessusRoute = ProcessusRouteImport.update({
 const PremiumRoute = PremiumRouteImport.update({
   id: '/premium',
   path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpportunitesRoute = OpportunitesRouteImport.update({
+  id: '/opportunites',
+  path: '/opportunites',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/favoris': typeof FavorisRoute
   '/guide-investissement-afrique': typeof GuideInvestissementAfriqueRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/opportunites': typeof OpportunitesRoute
   '/premium': typeof PremiumRoute
   '/processus': typeof ProcessusRoute
   '/projets': typeof ProjetsRouteWithChildren
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/favoris': typeof FavorisRoute
   '/guide-investissement-afrique': typeof GuideInvestissementAfriqueRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/opportunites': typeof OpportunitesRoute
   '/premium': typeof PremiumRoute
   '/processus': typeof ProcessusRoute
   '/secteurs': typeof SecteursRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/favoris': typeof FavorisRoute
   '/guide-investissement-afrique': typeof GuideInvestissementAfriqueRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/opportunites': typeof OpportunitesRoute
   '/premium': typeof PremiumRoute
   '/processus': typeof ProcessusRoute
   '/projets': typeof ProjetsRouteWithChildren
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
     | '/favoris'
     | '/guide-investissement-afrique'
     | '/mentions-legales'
+    | '/opportunites'
     | '/premium'
     | '/processus'
     | '/projets'
@@ -244,6 +254,7 @@ export interface FileRouteTypes {
     | '/favoris'
     | '/guide-investissement-afrique'
     | '/mentions-legales'
+    | '/opportunites'
     | '/premium'
     | '/processus'
     | '/secteurs'
@@ -266,6 +277,7 @@ export interface FileRouteTypes {
     | '/favoris'
     | '/guide-investissement-afrique'
     | '/mentions-legales'
+    | '/opportunites'
     | '/premium'
     | '/processus'
     | '/projets'
@@ -290,6 +302,7 @@ export interface RootRouteChildren {
   FavorisRoute: typeof FavorisRoute
   GuideInvestissementAfriqueRoute: typeof GuideInvestissementAfriqueRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
+  OpportunitesRoute: typeof OpportunitesRoute
   PremiumRoute: typeof PremiumRoute
   ProcessusRoute: typeof ProcessusRoute
   ProjetsRoute: typeof ProjetsRouteWithChildren
@@ -349,6 +362,13 @@ declare module '@tanstack/react-router' {
       path: '/premium'
       fullPath: '/premium'
       preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opportunites': {
+      id: '/opportunites'
+      path: '/opportunites'
+      fullPath: '/opportunites'
+      preLoaderRoute: typeof OpportunitesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mentions-legales': {
@@ -477,6 +497,7 @@ const rootRouteChildren: RootRouteChildren = {
   FavorisRoute: FavorisRoute,
   GuideInvestissementAfriqueRoute: GuideInvestissementAfriqueRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
+  OpportunitesRoute: OpportunitesRoute,
   PremiumRoute: PremiumRoute,
   ProcessusRoute: ProcessusRoute,
   ProjetsRoute: ProjetsRouteWithChildren,
