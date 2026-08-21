@@ -24,6 +24,7 @@ import { Route as DemandesRouteImport } from './routes/demandes'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CguRouteImport } from './routes/cgu'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ActualitesRouteImport } from './routes/actualites'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjetsIndexRouteImport } from './routes/projets.index'
@@ -106,6 +107,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActualitesRoute = ActualitesRouteImport.update({
+  id: '/actualites',
+  path: '/actualites',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AProposRoute = AProposRouteImport.update({
   id: '/a-propos',
   path: '/a-propos',
@@ -135,6 +141,7 @@ const DataRoomIdRoute = DataRoomIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/actualites': typeof ActualitesRoute
   '/auth': typeof AuthRoute
   '/cgu': typeof CguRoute
   '/contact': typeof ContactRoute
@@ -157,6 +164,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/actualites': typeof ActualitesRoute
   '/auth': typeof AuthRoute
   '/cgu': typeof CguRoute
   '/contact': typeof ContactRoute
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
+  '/actualites': typeof ActualitesRoute
   '/auth': typeof AuthRoute
   '/cgu': typeof CguRoute
   '/contact': typeof ContactRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/a-propos'
+    | '/actualites'
     | '/auth'
     | '/cgu'
     | '/contact'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/a-propos'
+    | '/actualites'
     | '/auth'
     | '/cgu'
     | '/contact'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/a-propos'
+    | '/actualites'
     | '/auth'
     | '/cgu'
     | '/contact'
@@ -269,6 +281,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
+  ActualitesRoute: typeof ActualitesRoute
   AuthRoute: typeof AuthRoute
   CguRoute: typeof CguRoute
   ContactRoute: typeof ContactRoute
@@ -394,6 +407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/actualites': {
+      id: '/actualites'
+      path: '/actualites'
+      fullPath: '/actualites'
+      preLoaderRoute: typeof ActualitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/a-propos': {
       id: '/a-propos'
       path: '/a-propos'
@@ -448,6 +468,7 @@ const ProjetsRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
+  ActualitesRoute: ActualitesRoute,
   AuthRoute: AuthRoute,
   CguRoute: CguRoute,
   ContactRoute: ContactRoute,
