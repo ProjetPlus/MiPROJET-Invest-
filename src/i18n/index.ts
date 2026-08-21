@@ -1,6 +1,5 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
 
 // Minimal translation resources — the platform is structured for i18n.
 // Additional keys are added progressively; missing keys fall back to French.
