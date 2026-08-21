@@ -25,6 +25,7 @@ import { Route as DemandesRouteImport } from './routes/demandes'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CguRouteImport } from './routes/cgu'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AppelsOffresRouteImport } from './routes/appels-offres'
 import { Route as ActualitesRouteImport } from './routes/actualites'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as IndexRouteImport } from './routes/index'
@@ -113,6 +114,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppelsOffresRoute = AppelsOffresRouteImport.update({
+  id: '/appels-offres',
+  path: '/appels-offres',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ActualitesRoute = ActualitesRouteImport.update({
   id: '/actualites',
   path: '/actualites',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/actualites': typeof ActualitesRoute
+  '/appels-offres': typeof AppelsOffresRoute
   '/auth': typeof AuthRoute
   '/cgu': typeof CguRoute
   '/contact': typeof ContactRoute
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/actualites': typeof ActualitesRoute
+  '/appels-offres': typeof AppelsOffresRoute
   '/auth': typeof AuthRoute
   '/cgu': typeof CguRoute
   '/contact': typeof ContactRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/actualites': typeof ActualitesRoute
+  '/appels-offres': typeof AppelsOffresRoute
   '/auth': typeof AuthRoute
   '/cgu': typeof CguRoute
   '/contact': typeof ContactRoute
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/actualites'
+    | '/appels-offres'
     | '/auth'
     | '/cgu'
     | '/contact'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/actualites'
+    | '/appels-offres'
     | '/auth'
     | '/cgu'
     | '/contact'
@@ -269,6 +280,7 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/actualites'
+    | '/appels-offres'
     | '/auth'
     | '/cgu'
     | '/contact'
@@ -294,6 +306,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
   ActualitesRoute: typeof ActualitesRoute
+  AppelsOffresRoute: typeof AppelsOffresRoute
   AuthRoute: typeof AuthRoute
   CguRoute: typeof CguRoute
   ContactRoute: typeof ContactRoute
@@ -427,6 +440,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/appels-offres': {
+      id: '/appels-offres'
+      path: '/appels-offres'
+      fullPath: '/appels-offres'
+      preLoaderRoute: typeof AppelsOffresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/actualites': {
       id: '/actualites'
       path: '/actualites'
@@ -489,6 +509,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
   ActualitesRoute: ActualitesRoute,
+  AppelsOffresRoute: AppelsOffresRoute,
   AuthRoute: AuthRoute,
   CguRoute: CguRoute,
   ContactRoute: ContactRoute,
