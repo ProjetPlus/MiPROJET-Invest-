@@ -4370,73 +4370,6 @@ export type Database = {
         }
         Relationships: []
       }
-      mp_project_team_public: {
-        Row: {
-          bio: string | null
-          created_at: string | null
-          expertise: string | null
-          full_name: string | null
-          id: string | null
-          is_external: boolean | null
-          organization: string | null
-          photo_url: string | null
-          project_id: string | null
-          role_title: string | null
-          sort_order: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          bio?: string | null
-          created_at?: string | null
-          expertise?: string | null
-          full_name?: string | null
-          id?: string | null
-          is_external?: boolean | null
-          organization?: string | null
-          photo_url?: string | null
-          project_id?: string | null
-          role_title?: string | null
-          sort_order?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          bio?: string | null
-          created_at?: string | null
-          expertise?: string | null
-          full_name?: string | null
-          id?: string | null
-          is_external?: boolean | null
-          organization?: string | null
-          photo_url?: string | null
-          project_id?: string | null
-          role_title?: string | null
-          sort_order?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "mp_project_team_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "mp_projects"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "mp_project_team_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "v_mp_ecosystem_scoring"
-            referencedColumns: ["project_id"]
-          },
-          {
-            foreignKeyName: "mp_project_team_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "v_mp_scoring_coherence"
-            referencedColumns: ["project_id"]
-          },
-        ]
-      }
       public_projects: {
         Row: {
           amount_requested: number | null
@@ -4738,6 +4671,10 @@ export type Database = {
         Returns: number
       }
       increment_tender_views: { Args: { _id: string }; Returns: undefined }
+      invest_can_read_document_object: {
+        Args: { _path: string }
+        Returns: boolean
+      }
       invest_project_documents: {
         Args: { _project_id: string }
         Returns: {
