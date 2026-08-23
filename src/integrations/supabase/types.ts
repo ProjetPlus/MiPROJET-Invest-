@@ -182,6 +182,38 @@ export type Database = {
         }
         Relationships: []
       }
+      connection_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          request_id: string
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          request_id: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          request_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connection_messages_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "connection_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connection_requests: {
         Row: {
           admin_notes: string | null
@@ -4595,6 +4627,10 @@ export type Database = {
       build_short_slug: {
         Args: { _prefix: string; _rank: number; _ts: string }
         Returns: string
+      }
+      can_access_connection_channel: {
+        Args: { _request_id: string; _user_id: string }
+        Returns: boolean
       }
       can_manage_org: { Args: { _org_id: string }; Returns: boolean }
       current_org_role: {
