@@ -46,11 +46,28 @@ export interface PlanItem {
   features: string[];
 }
 
+export interface SectorInsight {
+  sector: string;
+  projects: number;
+  amountSought: number;
+  averageScore: number | null;
+  share: number;
+}
+
 export interface EcosystemStats {
   projects: number;
   opportunities: number;
   tenders: number;
   news: number;
+  countries: number;
+  sectors: number;
+  amountSought: number;
+  averageTicket: number;
+  averageScore: number | null;
+  currency: string;
+  goProjects: number;
+  plusProjects: number;
+  sectorInsights: SectorInsight[];
 }
 
 /** Actualités publiées de l'écosystème MiPROJET. */
