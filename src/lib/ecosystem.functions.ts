@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createPublicClient } from "@/lib/invest.server";
+import { createPublicClient, dedupeProjectRows } from "@/lib/invest.server";
 
 export interface NewsItem {
   id: string;
