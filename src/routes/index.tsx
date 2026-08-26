@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ShieldCheck, TrendingUp, Users, Globe2, Building2, Sprout, Rocket, Layers, Compass } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight, Building2, Sprout, Rocket, Layers, Compass } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
@@ -7,16 +8,20 @@ import { ProjectCard } from "@/components/project/project-card";
 import { listInvestProjects } from "@/lib/invest.functions";
 import { getEcosystemStats } from "@/lib/ecosystem.functions";
 import { formatMoney } from "@/lib/invest-types";
+import heroPresentation from "@/assets/hero-presentation.jpg";
+import heroFinancement from "@/assets/hero-financement.jpg";
+import heroInnovation from "@/assets/hero-innovation.jpg";
+import heroAgro from "@/assets/hero-agro.jpg";
 
-const formatEUR = (n: number) => formatMoney(n);
-const STATS = {
-  projects_active: 0,
-  projects_funded: 0,
-  investors_verified: 0,
-  countries: 0,
-  amount_raised_eur: 0,
-  average_ticket_eur: 0,
-};
+const HERO_SLIDES = [
+  { src: heroFinancement, alt: "Signature d'un accord de financement entre partenaires à Abidjan", caption: "Accords de financement structurés" },
+  { src: heroPresentation, alt: "Présentation d'un projet devant des investisseurs à Abidjan", caption: "Présentation de projets aux investisseurs" },
+  { src: heroInnovation, alt: "Jeunes innovateurs ivoiriens dans un incubateur technologique", caption: "Promotion de projets innovants" },
+  { src: heroAgro, alt: "Visite d'une plantation de cacao avec des investisseurs en Côte d'Ivoire", caption: "Due diligence terrain sur les projets agricoles" },
+];
+
+const compact = (n: number) =>
+  new Intl.NumberFormat("fr-FR", { notation: "compact", maximumFractionDigits: 1 }).format(n);
 
 const HOME_URL = "https://miprojetinvest.lovable.app/";
 const HOME_TITLE = "MiPROJET Invest — Investir dans l'Afrique qui se construit";
