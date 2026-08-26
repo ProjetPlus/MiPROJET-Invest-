@@ -2,12 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   createPublicClient,
-  
+  dedupeProjectRows,
   mapProject,
   mapProjectDetail,
   PROJECT_PUBLIC_COLUMNS,
 } from "@/lib/invest.server";
 import type {
+  ChannelMessage,
   ConnectionRequest,
   ConnectionStatus,
   InvestNotification,
