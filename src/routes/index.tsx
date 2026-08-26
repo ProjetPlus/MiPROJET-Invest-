@@ -99,22 +99,18 @@ function LandingPage() {
                   </Button>
                 </Link>
               </div>
-              <div className="flex flex-wrap gap-6 pt-4 text-sm">
-                <MiniKPI value={STATS.projects_active.toString()} label="Projets actifs" />
-                <MiniKPI value={STATS.investors_verified.toLocaleString("fr-FR")} label="Investisseurs" />
-                <MiniKPI value={`${STATS.countries}`} label="Pays" />
-                <MiniKPI value={formatEUR(STATS.amount_raised_eur)} label="Capital mobilisé" />
+              <div className="grid grid-cols-2 gap-x-6 gap-y-4 pt-4 text-sm sm:flex sm:flex-wrap">
+                <MiniKPI value={compact(stats.projects)} label="Projets publiés" />
+                <MiniKPI value={compact(stats.opportunities)} label="Opportunités" />
+                <MiniKPI value={`${stats.countries}`} label="Pays couverts" />
+                <MiniKPI value={stats.amountSought > 0 ? formatMoney(stats.amountSought, stats.currency) : "—"} label="Capital recherché" />
               </div>
             </div>
 
-            <div className="relative">
-              <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
-                <img
-                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1000&auto=format&fit=crop&q=70"
-                  alt="Entrepreneurs africains"
-                  className="w-full h-64 sm:h-80 lg:h-[420px] object-cover"
-                />
-                <div className="p-5 border-t border-border grid grid-cols-2 gap-3">
+            <div className="relative min-w-0">
+              <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+                <HeroCarousel />
+                <div className="grid grid-cols-2 gap-3 border-t border-border p-4 sm:p-5">
                   <QuickTile icon={<Sprout className="h-4 w-4" />} tone="green" label="Go" />
                   <QuickTile icon={<Building2 className="h-4 w-4" />} tone="orange" label="+" />
                 </div>
