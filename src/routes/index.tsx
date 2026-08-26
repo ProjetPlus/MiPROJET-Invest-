@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ShieldCheck, TrendingUp, Users, Globe2, Building2, Sprout, Rocket, Layers, Compass } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight, Building2, Sprout, Rocket, Layers, Compass } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { SiteShell } from "@/components/layout/site-shell";
 import { Button } from "@/components/ui/button";
@@ -7,16 +8,20 @@ import { ProjectCard } from "@/components/project/project-card";
 import { listInvestProjects } from "@/lib/invest.functions";
 import { getEcosystemStats } from "@/lib/ecosystem.functions";
 import { formatMoney } from "@/lib/invest-types";
+import heroPresentation from "@/assets/hero-presentation.jpg";
+import heroFinancement from "@/assets/hero-financement.jpg";
+import heroInnovation from "@/assets/hero-innovation.jpg";
+import heroAgro from "@/assets/hero-agro.jpg";
 
-const formatEUR = (n: number) => formatMoney(n);
-const STATS = {
-  projects_active: 0,
-  projects_funded: 0,
-  investors_verified: 0,
-  countries: 0,
-  amount_raised_eur: 0,
-  average_ticket_eur: 0,
-};
+const HERO_SLIDES = [
+  { src: heroFinancement, alt: "Signature d'un accord de financement entre partenaires à Abidjan", caption: "Accords de financement structurés" },
+  { src: heroPresentation, alt: "Présentation d'un projet devant des investisseurs à Abidjan", caption: "Présentation de projets aux investisseurs" },
+  { src: heroInnovation, alt: "Jeunes innovateurs ivoiriens dans un incubateur technologique", caption: "Promotion de projets innovants" },
+  { src: heroAgro, alt: "Visite d'une plantation de cacao avec des investisseurs en Côte d'Ivoire", caption: "Due diligence terrain sur les projets agricoles" },
+];
+
+const compact = (n: number) =>
+  new Intl.NumberFormat("fr-FR", { notation: "compact", maximumFractionDigits: 1 }).format(n);
 
 const HOME_URL = "https://miprojetinvest.lovable.app/";
 const HOME_TITLE = "MiPROJET Invest — Investir dans l'Afrique qui se construit";
@@ -94,22 +99,18 @@ function LandingPage() {
                   </Button>
                 </Link>
               </div>
-              <div className="flex flex-wrap gap-6 pt-4 text-sm">
-                <MiniKPI value={STATS.projects_active.toString()} label="Projets actifs" />
-                <MiniKPI value={STATS.investors_verified.toLocaleString("fr-FR")} label="Investisseurs" />
-                <MiniKPI value={`${STATS.countries}`} label="Pays" />
-                <MiniKPI value={formatEUR(STATS.amount_raised_eur)} label="Capital mobilisé" />
+              <div className="grid grid-cols-2 gap-x-6 gap-y-4 pt-4 text-sm sm:flex sm:flex-wrap">
+                <MiniKPI value={compact(stats.projects)} label="Projets publiés" />
+                <MiniKPI value={compact(stats.opportunities)} label="Opportunités" />
+                <MiniKPI value={`${stats.countries}`} label="Pays couverts" />
+                <MiniKPI value={stats.amountSought > 0 ? formatMoney(stats.amountSought, stats.currency) : "—"} label="Capital recherché" />
               </div>
             </div>
 
-            <div className="relative">
-              <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-sm">
-                <img
-                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1000&auto=format&fit=crop&q=70"
-                  alt="Entrepreneurs africains"
-                  className="w-full h-64 sm:h-80 lg:h-[420px] object-cover"
-                />
-                <div className="p-5 border-t border-border grid grid-cols-2 gap-3">
+            <div className="relative min-w-0">
+              <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+                <HeroCarousel />
+                <div className="grid grid-cols-2 gap-3 border-t border-border p-4 sm:p-5">
                   <QuickTile icon={<Sprout className="h-4 w-4" />} tone="green" label="Go" />
                   <QuickTile icon={<Building2 className="h-4 w-4" />} tone="orange" label="+" />
                 </div>
@@ -154,39 +155,71 @@ function LandingPage() {
 
       {/* CHIFFRES RÉELS */}
       <section className="container-page py-12">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {[
-            { v: stats.projects, l: "Projets publiés" },
-            { v: stats.opportunities, l: "Opportunités de financement" },
-            { v: stats.tenders, l: "Appels d'offres suivis" },
-            { v: stats.news, l: "Actualités publiées" },
+            { v: new Intl.NumberFormat("fr-FR").format(stats.projects), l: "Projets publiés" },
+            { v: new Intl.NumberFormat("fr-FR").format(stats.opportunities), l: "Opportunités de financement" },
+            { v: new Intl.NumberFormat("fr-FR").format(stats.tenders), l: "Appels d'offres suivis" },
+            { v: new Intl.NumberFormat("fr-FR").format(stats.news), l: "Actualités publiées" },
           ].map((k) => (
-            <div key={k.l} className="rounded-2xl border border-border bg-card p-5 text-center">
-              <div className="text-2xl md:text-3xl font-black text-primary">
-                {new Intl.NumberFormat("fr-FR").format(k.v)}
-              </div>
-              <div className="mt-1 text-xs md:text-sm text-muted-foreground break-words">{k.l}</div>
+            <div key={k.l} className="rounded-2xl border border-border bg-card p-4 text-center sm:p-5">
+              <div className="text-2xl font-black text-primary md:text-3xl">{k.v}</div>
+              <div className="mt-1 break-words text-xs text-muted-foreground md:text-sm">{k.l}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* SECTEURS */}
-      <section className="container-page py-20">
-        <div className="max-w-2xl">
-          <div className="text-xs font-bold uppercase tracking-widest text-brand-green">Secteurs</div>
-          <h2 className="mt-2 text-3xl md:text-4xl font-black">Diversifiez à l'échelle du continent</h2>
+      {/* SECTEURS — indicateurs calculés depuis la base */}
+      <section className="container-page py-16 md:py-20">
+        <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+          <div className="min-w-0 max-w-2xl">
+            <div className="text-xs font-bold uppercase tracking-widest text-brand-green">Secteurs</div>
+            <h2 className="mt-2 text-2xl font-black sm:text-3xl md:text-4xl">Diversifiez à l'échelle du continent</h2>
+            <p className="mt-3 text-sm text-muted-foreground md:text-base">
+              {stats.sectors} secteurs représentés, {stats.countries} pays, dont {stats.goProjects} projets MiPROJET Go et {stats.plusProjects} projets MiPROJET+.
+            </p>
+          </div>
+          <Link to="/secteurs" className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue hover:underline">
+            Tous les secteurs <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
-        <div className="mt-8 flex flex-wrap gap-2">
-          {SECTORS.map((s) => (
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {stats.sectorInsights.slice(0, 6).map((s) => (
             <Link
-              key={s}
-              to="/secteurs"
-              className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:border-brand-blue hover:text-brand-blue transition-colors"
+              key={s.sector}
+              to="/projets"
+              className="group min-w-0 rounded-2xl border border-border bg-card p-5 transition-colors hover:border-brand-gold"
             >
-              {s}
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                <div className="truncate font-bold group-hover:text-brand-blue">{s.sector}</div>
+                <span className="shrink-0 rounded-full bg-brand-gold/15 px-2 py-0.5 text-[11px] font-bold text-brand-gold-foreground">{s.share}%</span>
+              </div>
+              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div className="h-full rounded-full bg-brand-gold" style={{ width: `${Math.max(4, s.share)}%` }} />
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-3 text-xs text-muted-foreground">
+                <div>
+                  <div className="text-sm font-bold text-foreground">{s.projects}</div>
+                  projet{s.projects > 1 ? "s" : ""}
+                </div>
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-bold text-foreground">
+                    {s.amountSought > 0 ? formatMoney(s.amountSought, stats.currency) : "—"}
+                  </div>
+                  recherché
+                </div>
+              </div>
             </Link>
           ))}
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <StatTile label="Ticket moyen recherché" value={stats.averageTicket > 0 ? formatMoney(stats.averageTicket, stats.currency) : "—"} />
+          <StatTile label="Score MP moyen" value={stats.averageScore != null ? `${stats.averageScore}/100` : "—"} />
+          <StatTile label="Projets MiPROJET Go" value={`${stats.goProjects}`} />
+          <StatTile label="Projets MiPROJET+" value={`${stats.plusProjects}`} />
         </div>
       </section>
 

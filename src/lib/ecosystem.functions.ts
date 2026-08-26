@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createPublicClient } from "@/lib/invest.server";
+import { createPublicClient, dedupeProjectRows } from "@/lib/invest.server";
 
 export interface NewsItem {
   id: string;
@@ -46,11 +46,28 @@ export interface PlanItem {
   features: string[];
 }
 
+export interface SectorInsight {
+  sector: string;
+  projects: number;
+  amountSought: number;
+  averageScore: number | null;
+  share: number;
+}
+
 export interface EcosystemStats {
   projects: number;
   opportunities: number;
   tenders: number;
   news: number;
+  countries: number;
+  sectors: number;
+  amountSought: number;
+  averageTicket: number;
+  averageScore: number | null;
+  currency: string;
+  goProjects: number;
+  plusProjects: number;
+  sectorInsights: SectorInsight[];
 }
 
 /** Actualités publiées de l'écosystème MiPROJET. */
@@ -151,22 +168,66 @@ export const listPlans = createServerFn({ method: "GET" }).handler(
   },
 );
 
-/** Chiffres réels affichés sur la page d'accueil. */
+/** Chiffres réels affichés sur la page d'accueil (calculés depuis la base). */
 export const getEcosystemStats = createServerFn({ method: "GET" }).handler(
   async (): Promise<EcosystemStats> => {
     const supabase = createPublicClient();
     const head = { count: "exact" as const, head: true };
-    const [projects, opportunities, tenders, news] = await Promise.all([
-      supabase.from("projects").select("id", head).eq("status", "published").eq("is_public", true),
+    const [rows, opportunities, tenders, news] = await Promise.all([
+      supabase
+        .from("projects")
+        .select("id, title, sector, category, country, currency, mp_score, amount_requested, funding_goal, metadata")
+        .eq("status", "published")
+        .eq("is_public", true)
+        .limit(500),
       supabase.from("opportunities").select("id", head).eq("status", "published"),
       supabase.from("tenders").select("id", head),
       supabase.from("news").select("id", head).eq("status", "published"),
     ]);
+
+    const list = dedupeProjectRows((rows.data ?? []) as unknown as Record<string, any>[]);
+    const soughtOf = (r: Record<string, any>) => Number(r.amount_requested ?? r.funding_goal ?? 0) || 0;
+    const sectorOf = (r: Record<string, any>) => (r.sector ?? r.category ?? "Autre") as string;
+
+    const amountSought = list.reduce((s, r) => s + soughtOf(r), 0);
+    const withAmount = list.filter((r) => soughtOf(r) > 0);
+    const scores = list.map((r) => (r.mp_score != null ? Number(r.mp_score) : null)).filter((n): n is number => n != null);
+    const plusProjects = list.filter((r) => ((r.metadata ?? {}) as Record<string, unknown>)["mp_project_id"]).length;
+
+    const bySector = new Map<string, { projects: number; amountSought: number; scores: number[] }>();
+    for (const r of list) {
+      const key = sectorOf(r);
+      const agg = bySector.get(key) ?? { projects: 0, amountSought: 0, scores: [] };
+      agg.projects += 1;
+      agg.amountSought += soughtOf(r);
+      if (r.mp_score != null) agg.scores.push(Number(r.mp_score));
+      bySector.set(key, agg);
+    }
+
+    const sectorInsights: SectorInsight[] = [...bySector.entries()]
+      .map(([sector, a]) => ({
+        sector,
+        projects: a.projects,
+        amountSought: a.amountSought,
+        averageScore: a.scores.length ? Math.round(a.scores.reduce((s, n) => s + n, 0) / a.scores.length) : null,
+        share: list.length ? Math.round((a.projects / list.length) * 100) : 0,
+      }))
+      .sort((a, b) => b.projects - a.projects || b.amountSought - a.amountSought);
+
     return {
-      projects: projects.count ?? 0,
+      projects: list.length,
       opportunities: opportunities.count ?? 0,
       tenders: tenders.count ?? 0,
       news: news.count ?? 0,
+      countries: new Set(list.map((r) => (r.country ?? "").trim()).filter(Boolean)).size,
+      sectors: bySector.size,
+      amountSought,
+      averageTicket: withAmount.length ? Math.round(amountSought / withAmount.length) : 0,
+      averageScore: scores.length ? Math.round(scores.reduce((s, n) => s + n, 0) / scores.length) : null,
+      currency: (list.find((r) => r.currency)?.currency as string) ?? "XOF",
+      goProjects: list.length - plusProjects,
+      plusProjects,
+      sectorInsights,
     };
   },
 );

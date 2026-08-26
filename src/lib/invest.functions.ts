@@ -2,12 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   createPublicClient,
-  
+  dedupeProjectRows,
   mapProject,
   mapProjectDetail,
   PROJECT_PUBLIC_COLUMNS,
 } from "@/lib/invest.server";
 import type {
+  ChannelMessage,
   ConnectionRequest,
   ConnectionStatus,
   InvestNotification,
@@ -30,7 +31,8 @@ export const listInvestProjects = createServerFn({ method: "GET" }).handler(
       .limit(200);
     if (error) throw new Error(error.message);
 
-    const rows = (data ?? []) as unknown as Record<string, any>[];
+    // Déduplication serveur : un projet repris de MiPROJET+ n'apparaît qu'une fois.
+    const rows = dedupeProjectRows((data ?? []) as unknown as Record<string, any>[]);
     // Le nombre de documents n'est jamais exposé publiquement (dossier réservé aux membres).
     return rows.map((r) => mapProject(r, 0));
   },
@@ -251,6 +253,51 @@ export const updateConnectionRequest = createServerFn({ method: "POST" })
         updated_at: new Date().toISOString(),
       })
       .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+/** Messages du canal sécurisé — accès contrôlé en base (investisseur, porteur, admin). */
+export const listChannelMessages = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { requestId: string }) => data)
+  .handler(async ({ data, context }): Promise<ChannelMessage[]> => {
+    const { supabase, userId } = context;
+    const { data: rows, error } = await supabase
+      .from("connection_messages")
+      .select("id, request_id, sender_id, body, created_at")
+      .eq("request_id", data.requestId)
+      .order("created_at", { ascending: true })
+      .limit(200);
+    if (error) return [];
+    return (rows ?? []).map((m) => ({
+      id: m.id,
+      requestId: m.request_id,
+      senderId: m.sender_id,
+      body: m.body,
+      createdAt: m.created_at,
+      mine: m.sender_id === userId,
+    }));
+  });
+
+/** Envoi d'un message dans le canal sécurisé (uniquement si le canal est ouvert). */
+export const sendChannelMessage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { requestId: string; body: string }) => data)
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const body = (data.body ?? "").trim().slice(0, 4000);
+    if (!body) throw new Error("Message vide");
+
+    const { data: allowed } = await supabase.rpc("can_access_connection_channel", {
+      _request_id: data.requestId,
+      _user_id: userId,
+    });
+    if (!allowed) throw new Error("Canal non accessible");
+
+    const { error } = await supabase
+      .from("connection_messages")
+      .insert({ request_id: data.requestId, sender_id: userId, body });
     if (error) throw new Error(error.message);
     return { ok: true };
   });

@@ -82,6 +82,15 @@ export interface ConnectionRequest {
   updatedAt: string;
 }
 
+export interface ChannelMessage {
+  id: string;
+  requestId: string;
+  senderId: string;
+  body: string;
+  createdAt: string;
+  mine: boolean;
+}
+
 export interface InvestNotification {
   id: string;
   title: string;
