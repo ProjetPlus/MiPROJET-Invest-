@@ -4742,6 +4742,25 @@ export type Database = {
         }
         Returns: boolean
       }
+      mp_public_projects: {
+        Args: never
+        Returns: {
+          activity_type: string
+          city: string
+          country: string
+          cover_url: string
+          created_at: string
+          description: string
+          display_id: string
+          id: string
+          logo_url: string
+          project_type: string
+          sector: string
+          short_pitch: string
+          status: string
+          title: string
+        }[]
+      }
       mp_recompute_score: { Args: { _project_id: string }; Returns: undefined }
       mp_resync_scoring: { Args: { _project_id?: string }; Returns: Json }
       mp_rls_test_report: {
