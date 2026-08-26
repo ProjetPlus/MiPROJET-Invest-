@@ -24,6 +24,47 @@ export const PROJECT_PUBLIC_COLUMNS =
 
 type Row = Record<string, any>;
 
+/**
+ * Déduplication serveur : un même projet peut exister en double lorsqu'il a été
+ * repris depuis MiPROJET+ (metadata->>'mp_project_id'). On garde une seule
+ * occurrence, en privilégiant la fiche rattachée à une source fiable.
+ */
+export function dedupeProjectRows(rows: Row[]): Row[] {
+  const byKey = new Map<string, Row>();
+  const order: string[] = [];
+
+  const keyOf = (r: Row) => {
+    const meta = (r.metadata ?? {}) as Record<string, unknown>;
+    const mpId = meta["mp_project_id"];
+    if (mpId) return `mp:${String(mpId)}`;
+    return `t:${String(r.title ?? "").trim().toLowerCase().replace(/\s+/g, " ")}|${String(r.country ?? "").toLowerCase()}`;
+  };
+
+  // Score de fiabilité : source MiPROJET+ > données les plus complètes.
+  const rank = (r: Row) => {
+    const meta = (r.metadata ?? {}) as Record<string, unknown>;
+    let s = 0;
+    if (meta["mp_project_id"]) s += 100;
+    if (r.mp_score != null) s += 10;
+    if (r.cover_url || r.image_url) s += 5;
+    if (r.description) s += 2;
+    return s;
+  };
+
+  for (const row of rows) {
+    const key = keyOf(row);
+    const existing = byKey.get(key);
+    if (!existing) {
+      byKey.set(key, row);
+      order.push(key);
+    } else if (rank(row) > rank(existing)) {
+      byKey.set(key, row);
+    }
+  }
+
+  return order.map((k) => byKey.get(k)!) as Row[];
+}
+
 export function channelOf(row: Row): ProjectChannel {
   const meta = (row.metadata ?? {}) as Record<string, unknown>;
   return meta["mp_project_id"] ? "PLUS" : "GO";
