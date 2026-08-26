@@ -155,39 +155,71 @@ function LandingPage() {
 
       {/* CHIFFRES RÉELS */}
       <section className="container-page py-12">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {[
-            { v: stats.projects, l: "Projets publiés" },
-            { v: stats.opportunities, l: "Opportunités de financement" },
-            { v: stats.tenders, l: "Appels d'offres suivis" },
-            { v: stats.news, l: "Actualités publiées" },
+            { v: new Intl.NumberFormat("fr-FR").format(stats.projects), l: "Projets publiés" },
+            { v: new Intl.NumberFormat("fr-FR").format(stats.opportunities), l: "Opportunités de financement" },
+            { v: new Intl.NumberFormat("fr-FR").format(stats.tenders), l: "Appels d'offres suivis" },
+            { v: new Intl.NumberFormat("fr-FR").format(stats.news), l: "Actualités publiées" },
           ].map((k) => (
-            <div key={k.l} className="rounded-2xl border border-border bg-card p-5 text-center">
-              <div className="text-2xl md:text-3xl font-black text-primary">
-                {new Intl.NumberFormat("fr-FR").format(k.v)}
-              </div>
-              <div className="mt-1 text-xs md:text-sm text-muted-foreground break-words">{k.l}</div>
+            <div key={k.l} className="rounded-2xl border border-border bg-card p-4 text-center sm:p-5">
+              <div className="text-2xl font-black text-primary md:text-3xl">{k.v}</div>
+              <div className="mt-1 break-words text-xs text-muted-foreground md:text-sm">{k.l}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* SECTEURS */}
-      <section className="container-page py-20">
-        <div className="max-w-2xl">
-          <div className="text-xs font-bold uppercase tracking-widest text-brand-green">Secteurs</div>
-          <h2 className="mt-2 text-3xl md:text-4xl font-black">Diversifiez à l'échelle du continent</h2>
+      {/* SECTEURS — indicateurs calculés depuis la base */}
+      <section className="container-page py-16 md:py-20">
+        <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+          <div className="min-w-0 max-w-2xl">
+            <div className="text-xs font-bold uppercase tracking-widest text-brand-green">Secteurs</div>
+            <h2 className="mt-2 text-2xl font-black sm:text-3xl md:text-4xl">Diversifiez à l'échelle du continent</h2>
+            <p className="mt-3 text-sm text-muted-foreground md:text-base">
+              {stats.sectors} secteurs représentés, {stats.countries} pays, dont {stats.goProjects} projets MiPROJET Go et {stats.plusProjects} projets MiPROJET+.
+            </p>
+          </div>
+          <Link to="/secteurs" className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue hover:underline">
+            Tous les secteurs <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
-        <div className="mt-8 flex flex-wrap gap-2">
-          {SECTORS.map((s) => (
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {stats.sectorInsights.slice(0, 6).map((s) => (
             <Link
-              key={s}
-              to="/secteurs"
-              className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:border-brand-blue hover:text-brand-blue transition-colors"
+              key={s.sector}
+              to="/projets"
+              className="group min-w-0 rounded-2xl border border-border bg-card p-5 transition-colors hover:border-brand-gold"
             >
-              {s}
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                <div className="truncate font-bold group-hover:text-brand-blue">{s.sector}</div>
+                <span className="shrink-0 rounded-full bg-brand-gold/15 px-2 py-0.5 text-[11px] font-bold text-brand-gold-foreground">{s.share}%</span>
+              </div>
+              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div className="h-full rounded-full bg-brand-gold" style={{ width: `${Math.max(4, s.share)}%` }} />
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-3 text-xs text-muted-foreground">
+                <div>
+                  <div className="text-sm font-bold text-foreground">{s.projects}</div>
+                  projet{s.projects > 1 ? "s" : ""}
+                </div>
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-bold text-foreground">
+                    {s.amountSought > 0 ? formatMoney(s.amountSought, stats.currency) : "—"}
+                  </div>
+                  recherché
+                </div>
+              </div>
             </Link>
           ))}
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <StatTile label="Ticket moyen recherché" value={stats.averageTicket > 0 ? formatMoney(stats.averageTicket, stats.currency) : "—"} />
+          <StatTile label="Score MP moyen" value={stats.averageScore != null ? `${stats.averageScore}/100` : "—"} />
+          <StatTile label="Projets MiPROJET Go" value={`${stats.goProjects}`} />
+          <StatTile label="Projets MiPROJET+" value={`${stats.plusProjects}`} />
         </div>
       </section>
 
