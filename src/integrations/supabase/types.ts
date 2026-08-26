@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.1"
+    PostgrestVersion: "14.17"
   }
   public: {
     Tables: {
@@ -4741,6 +4741,25 @@ export type Database = {
           _owner_id: string
         }
         Returns: boolean
+      }
+      mp_public_projects: {
+        Args: never
+        Returns: {
+          activity_type: string
+          city: string
+          country: string
+          cover_url: string
+          created_at: string
+          description: string
+          display_id: string
+          id: string
+          logo_url: string
+          project_type: string
+          sector: string
+          short_pitch: string
+          status: string
+          title: string
+        }[]
       }
       mp_recompute_score: { Args: { _project_id: string }; Returns: undefined }
       mp_resync_scoring: { Args: { _project_id?: string }; Returns: Json }
