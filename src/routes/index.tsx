@@ -67,7 +67,7 @@ function LandingPage() {
   const { t } = useTranslation();
   const { projects, stats } = Route.useLoaderData();
   const featured = projects.slice(0, 6);
-  const SECTORS = [...new Set(projects.map((p) => p.sector))];
+  
 
   return (
     <SiteShell>
