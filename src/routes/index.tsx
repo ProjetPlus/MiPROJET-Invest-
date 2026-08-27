@@ -67,7 +67,7 @@ function LandingPage() {
   const { t } = useTranslation();
   const { projects, stats } = Route.useLoaderData();
   const featured = projects.slice(0, 6);
-  const SECTORS = [...new Set(projects.map((p) => p.sector))];
+  
 
   return (
     <SiteShell>
@@ -291,6 +291,54 @@ function UniverseCard({ icon, name, tag, desc, tone }: { icon: React.ReactNode; 
       <div className={`inline-flex items-center gap-2 rounded-md px-2 py-1 text-[11px] font-bold uppercase tracking-wide ${chip}`}>{icon}{tag}</div>
       <div className="mt-4 text-lg font-black">{name}</div>
       <p className="mt-2 text-sm text-muted-foreground">{desc}</p>
+    </div>
+  );
+}
+
+function StatTile({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="min-w-0 rounded-2xl border border-border bg-card p-4 sm:p-5">
+      <div className="truncate text-lg font-black text-foreground md:text-xl">{value}</div>
+      <div className="mt-1 break-words text-xs text-muted-foreground">{label}</div>
+    </div>
+  );
+}
+
+function HeroCarousel() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setIndex((i) => (i + 1) % HERO_SLIDES.length), 5000);
+    return () => clearInterval(id);
+  }, []);
+
+  const slide = HERO_SLIDES[index];
+
+  return (
+    <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
+      {HERO_SLIDES.map((s, i) => (
+        <img
+          key={s.src}
+          src={s.src}
+          alt={s.alt}
+          loading={i === 0 ? "eager" : "lazy"}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${i === index ? "opacity-100" : "opacity-0"}`}
+        />
+      ))}
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+        <p className="text-sm font-semibold text-white">{slide.caption}</p>
+        <div className="mt-3 flex gap-1.5">
+          {HERO_SLIDES.map((s, i) => (
+            <button
+              key={s.src}
+              type="button"
+              aria-label={`Image ${i + 1}`}
+              onClick={() => setIndex(i)}
+              className={`h-1.5 rounded-full transition-all ${i === index ? "w-6 bg-brand-gold" : "w-3 bg-white/50"}`}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
